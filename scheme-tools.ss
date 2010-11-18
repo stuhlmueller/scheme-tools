@@ -2,7 +2,7 @@
 
 (library
 
- (scheme-tools common)
+ (scheme-tools)
 
  (export delay
          force

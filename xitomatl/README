@@ -1,0 +1,41 @@
+Derick Eddington's personal collection of various R6RS source-code
+------------------------------------------------------------------
+
+Source-code I have created; others' source-code I use and want organized in my
+own way; and a whole namespace to do whatever I want with.
+
+I've claimed `(xitomatl ---)' as my personal top-level namespace.  "Xitomatl",
+pronounced something like "zye-toe-ma-tul", is the Aztec Nahuatl language word
+for tomato.  I chose an obscure word I like and which I doubt anyone will ever
+have a conflict with me over :-)
+
+The Xitomatl collection requires SRFI libraries conforming to SRFI-97.  The SRFI
+libraries used by the author can be found at:
+
+  https://code.launchpad.net/~scheme-libraries-team/scheme-libraries/srfi
+
+Currently supported Scheme systems are Ikarus, Larceny, PLT, and Ypsilon.  They
+support the *.IMPL.sls convention for implementation-specific libraries.  Some
+of the Xitomatl collection requires the latest development versions of the
+Scheme systems.
+
+See the test programs in the "tests" folder for examples of how to use the
+libraries.
+
+For the latest development version, go to:
+
+  https://code.launchpad.net/~derick-eddington/scheme-libraries/xitomatl
+
+Bug Reporting:
+--------------
+Submit bug reports at:
+
+  https://bugs.launchpad.net/scheme-libraries/+filebug
+
+Disclaimer:  
+-----------
+My libraries are a moving target.  I'm continually changing things.  Other
+people's libraries I've assimilated should be stable and should need to be
+changed only for bug fixes and updates to new versions.  If in the future some
+of my libraries stabilize, I'll advertise that and make documentation.
+

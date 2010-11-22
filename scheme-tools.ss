@@ -11,9 +11,12 @@
          match-lambda
          pretty-print
          gensym
-         symbol-maker)
+         symbol-maker
+         first
+         rest)
 
  (import (rnrs)
+         (scheme-tools readable-scheme)
          (only (ikarus) pretty-print gensym)
          (only (rnrs r5rs) delay force)
          (only (xitomatl curry) define/curry)
@@ -28,7 +31,3 @@
          (string->symbol (string-append (symbol->string sym) (number->string s)))))))
 
  )
-
- 
-         
-         

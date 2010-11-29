@@ -12,13 +12,23 @@
          pretty-print
          gensym
          symbol-maker
-         first
-         rest)
+         rest
+         pair
+         true?
+         false?
+         define/kw
+         lambda/kw
+         sum
+         all
+         tagged-list?
+         inexact->exact
+         exact->inexact)
 
  (import (rnrs)
          (scheme-tools readable-scheme)
-         (only (ikarus) pretty-print gensym)
+         (only (ikarus) pretty-print gensym inexact->exact exact->inexact)
          (only (rnrs r5rs) delay force)
+         (only (xitomatl keywords) define/kw lambda/kw)
          (only (xitomatl curry) define/curry)
          (only (xitomatl control) compose)
          (only (xitomatl match) match-lambda))

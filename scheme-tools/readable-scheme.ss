@@ -6,6 +6,8 @@
 
  (export rest
          pair
+         true
+         false
          true?
          false?
          sum
@@ -14,6 +16,10 @@
          symbol-maker)
 
  (import (rnrs))
+
+ (define true #t)
+
+ (define false #f)
 
  (define rest cdr)
 

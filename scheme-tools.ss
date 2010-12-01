@@ -15,6 +15,8 @@
          symbol-maker
          rest
          pair
+         true
+         false
          true?
          false?
          define/kw

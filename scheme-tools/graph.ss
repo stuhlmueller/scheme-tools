@@ -22,6 +22,7 @@
          graph:parent-links
          graph:link!
          graph:add-child!
+         graph:node-exists?
          link->label
          link->weight
          link->target)
@@ -38,7 +39,7 @@
            (mutable uptable graph:uptable graph:set-uptable!))
    (protocol
     (lambda (p)
-      (lambda () (p 'empty (make-hash-table) (make-hash-table) '())))))
+      (lambda () (p 'empty (make-hash-table) (make-hash-table))))))
 
  (define link->label first)
 
@@ -52,11 +53,13 @@
  (define (display-graph graph)
    (pretty-print (graph->alist graph)))
 
+ (define (graph:node-exists? graph node)
+   (hash-table-ref/default (graph:table graph) node #f))
+
  (define (graph:add-node! graph node)
-   (let ([node-exists (hash-table-ref/default (graph:table graph) node #f)])
-     (when (not node-exists)
-           (hash-table-set! (graph:table graph) node '())
-           (hash-table-set! (graph:uptable graph) node '()))))
+   (when (not (graph:node-exists? graph node))
+         (hash-table-set! (graph:table graph) node '())
+         (hash-table-set! (graph:uptable graph) node '())))
 
  (define (graph:children graph node)
    (let ([links (hash-table-ref/default (graph:table graph) node '())])

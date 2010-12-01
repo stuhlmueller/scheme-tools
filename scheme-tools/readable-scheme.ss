@@ -10,7 +10,8 @@
          false?
          sum
          all
-         tagged-list?)
+         tagged-list?
+         symbol-maker)
 
  (import (rnrs))
 
@@ -37,5 +38,12 @@
    (and (list? obj)
         (not (null? obj))
         (eq? (car obj) tag)))
+
+ (define (symbol-maker sym)
+   (let ([s 0])
+     (lambda ()
+       (begin
+         (set! s (+ s 1))
+         (string->symbol (string-append (symbol->string sym) (number->string s)))))))
 
  )

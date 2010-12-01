@@ -13,7 +13,9 @@
          sum
          all
          tagged-list?
-         symbol-maker)
+         symbol-maker
+         pe
+         call&return)
 
  (import (rnrs))
 
@@ -51,5 +53,12 @@
        (begin
          (set! s (+ s 1))
          (string->symbol (string-append (symbol->string sym) (number->string s)))))))
+
+ (define (pe . args)
+   (for-each display args))
+
+ (define (call&return proc arg)
+   (proc arg)
+   arg)
 
  )

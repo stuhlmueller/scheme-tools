@@ -50,8 +50,17 @@
  (define (graph->alist graph)
    (hash-table->alist (graph:table graph)))
 
+ (define (display-node node links)
+   (pe "node: " node "\n")
+   (if links
+       (begin
+         (for-each (lambda (link) (pe "  " link "\n"))
+                   links)
+         (pe "\n"))))
+
  (define (display-graph graph)
-   (pretty-print (graph->alist graph)))
+   (for-each (lambda (entry) (display-node (first entry) (rest entry)))
+             (graph->alist graph)))
 
  (define (graph:node-exists? graph node)
    (hash-table-ref/default (graph:table graph) node #f))

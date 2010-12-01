@@ -23,6 +23,8 @@
          lambda/kw
          sum
          all
+         pe
+         call&return
          tagged-list?
          inexact->exact
          exact->inexact)

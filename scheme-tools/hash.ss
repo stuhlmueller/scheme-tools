@@ -2,9 +2,9 @@
 
 ;; hasher that can deal with recursive references
 
-;; - throws out procedures; assumes that the object
-;;   given fully mirrors procedure information in a
-;;   more accessible way
+;; WARNING:
+;; This throws out procedures. We assume that any object given fully
+;; mirrors procedure information in an accessible way.
 
 (library
 

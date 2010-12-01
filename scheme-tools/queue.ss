@@ -6,6 +6,7 @@
 
  (export queue?
          make-empty-queue
+         make-queue
          enqueue!
          dequeue!
          queue-length
@@ -27,5 +28,10 @@
  (define/curry (enqueue-if-new! eql q obj)
    (when (not (in-queue? eql q obj))
          (enqueue! q obj)))
+
+ (define (make-queue . objs)
+   (let ([queue (make-empty-queue)])
+     (for-each (lambda (obj) (enqueue! queue obj)) objs)
+     queue))
 
  )

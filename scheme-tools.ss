@@ -8,6 +8,7 @@
          force
          define/curry
          compose
+         $
          match-lambda
          pretty-print
          gensym

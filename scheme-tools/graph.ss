@@ -14,7 +14,8 @@
 
  (export make-graph
          graph->alist
-         display-graph         
+         display-graph
+         graph-size
          graph:root
          graph:set-root!
          graph:add-node!
@@ -61,6 +62,9 @@
  (define (display-graph graph)
    (for-each (lambda (entry) (display-node (first entry) (rest entry)))
              (graph->alist graph)))
+
+ (define (graph-size graph)
+   (length (graph->alist graph)))
 
  (define (graph:node-exists? graph node)
    (hash-table-ref/default (graph:table graph) node #f))

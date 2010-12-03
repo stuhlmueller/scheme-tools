@@ -11,6 +11,7 @@
          $
          match-lambda
          pretty-print
+         format
          gensym
          symbol-maker
          rest
@@ -27,9 +28,11 @@
          call&return
          tagged-list?
          inexact->exact
-         exact->inexact)
+         exact->inexact
+         repl)
 
  (import (rnrs)
+         (scheme-tools repl)
          (scheme-tools readable-scheme)
          (scheme-tools external))
 

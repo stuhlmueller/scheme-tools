@@ -8,6 +8,8 @@
          force
          define/curry
          compose
+         format
+         void
          $
          match-lambda
          pretty-print
@@ -18,7 +20,7 @@
          exact->inexact)
 
  (import (rnrs)
-         (only (ikarus) pretty-print gensym inexact->exact exact->inexact)
+         (only (ikarus) pretty-print gensym inexact->exact exact->inexact format void)
          (only (rnrs r5rs) delay force)
          (only (xitomatl keywords) define/kw lambda/kw)
          (only (xitomatl curry) define/curry)

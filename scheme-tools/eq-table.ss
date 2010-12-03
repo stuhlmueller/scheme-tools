@@ -20,7 +20,7 @@
              (cons (cons key val) (car table-container))))
 
  (define (eq-table-lookup table-container key default-lambda)
-   (let ([val (assoc key (car table-container))])
+   (let ([val (assq key (car table-container))])
      (if val
          (cdr val)
          (default-lambda))))

@@ -1,0 +1,64 @@
+#!/usr/bin/python
+import sys
+import cPickle as pickle
+try:
+    import pymprog as p
+except:
+    print "linsolve needs glpk and pymprog-0.4"
+    exit()
+
+def var_ref(vt, vname):
+    vt.setdefault(vname, p.var([0], vname))
+    return vt[vname][0]
+      
+def parse_constraint(vt, eqn):
+    if type(eqn) in [type(0.0), type(0)]:
+        return eqn
+    elif type(eqn) != type([]):
+        return var_ref(vt, eqn)
+    elif eqn[0] == "=":
+        assert len(eqn) == 3
+        return parse_constraint(vt, eqn[1]) == parse_constraint(vt, eqn[2])
+    elif eqn[0] == "+":
+        assert len(eqn) == 3
+        return parse_constraint(vt, eqn[1]) + parse_constraint(vt, eqn[2])
+    elif eqn[0] == "*":
+        return parse_constraint(vt, eqn[1]) * parse_constraint(vt, eqn[2])
+    else:
+        raise Exception("unknown equation type", eqn)
+
+def build_constraint(vt, eqn):
+    return p.st(parse_constraint(vt, eqn))
+
+def solve_batch(eqns):
+    vt = {}
+    p.beginModel('basic')
+    for eqn in eqns:
+        build_constraint(vt, eqn)
+    p.solve()
+    for (vname, v) in vt.items():
+        print vname, v[0].primal
+
+def solve_online():
+    vt = {}
+    p.beginModel('basic')
+    while True:
+      try:
+          eqn = pickle.load(sys.stdin)
+          if eqn == "solve":
+              break
+          build_constraint(vt, eqn)
+      except EOFError:
+          break    
+    p.solve()
+    solution = [[vname, v[0].primal] for (vname, v) in vt.items()]
+    pickle.dump(solution, sys.stdout)
+    sys.stdout.flush()
+
+# eqns = [["=", ["+", ["*", 2, "x"], ["*", 3, "y"]], 4],
+#         ["=", ["+", ["*", 6, "x"], ["*", 1, "y"]], 8]]
+
+# solve_batch(eqns)
+
+if __name__ == "__main__":
+    solve_online()

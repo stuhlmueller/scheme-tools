@@ -13,6 +13,8 @@
          pretty-print
          format
          gensym
+         system
+         fprintf
          symbol-maker
          rest
          pair

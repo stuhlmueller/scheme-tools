@@ -1,31 +1,35 @@
 #!/usr/bin/python
 import sys
 import cPickle as pickle
+from operator import add, mul
 try:
     import pymprog as p
 except:
     print "linsolve needs glpk and pymprog-0.4"
     exit()
 
+def product(data):
+    return reduce(mul, data)
+    
 def var_ref(vt, vname):
     vt.setdefault(vname, p.var([0], vname))
     return vt[vname][0]
-      
-def parse_constraint(vt, eqn):
-    if type(eqn) in [type(0.0), type(0)]:
-        return eqn
-    elif type(eqn) != type([]):
-        return var_ref(vt, eqn)
-    elif eqn[0] == "=":
-        assert len(eqn) == 3
-        return parse_constraint(vt, eqn[1]) == parse_constraint(vt, eqn[2])
-    elif eqn[0] == "+":
-        assert len(eqn) == 3
-        return parse_constraint(vt, eqn[1]) + parse_constraint(vt, eqn[2])
-    elif eqn[0] == "*":
-        return parse_constraint(vt, eqn[1]) * parse_constraint(vt, eqn[2])
+
+## FIXME: don't assume arity 2
+def parse_constraint(vt, expr):
+    if type(expr) in [type(0.0), type(0)]:
+        return expr
+    elif type(expr) != type([]):
+        return var_ref(vt, expr)
+    elif expr[0] == "=":
+        assert len(expr) == 3
+        return parse_constraint(vt, expr[1]) == parse_constraint(vt, expr[2])
+    elif expr[0] == "+":
+        return sum([parse_constraint(vt, ei) for ei in expr[1:]])
+    elif expr[0] == "*":
+        return product([parse_constraint(vt, ei) for ei in expr[1:]])
     else:
-        raise Exception("unknown equation type", eqn)
+        raise Exception("unknown equation type", expr)
 
 def build_constraint(vt, eqn):
     return p.st(parse_constraint(vt, eqn))

@@ -15,7 +15,9 @@
          tagged-list?
          symbol-maker
          pe
-         call&return)
+         call&return
+         ->string
+         ->string:n)
 
  (import (rnrs))
 
@@ -60,5 +62,17 @@
  (define (call&return proc arg)
    (proc arg)
    arg)
+
+ (define (->string val)
+   (let-values ([(string-port extractor) (open-string-output-port)])
+     (write val string-port)
+     (extractor)))
+         
+ (define (->string:n val n)
+   (let ([string (->string val)])
+     (if (<= (string-length string) n)
+         string
+         (string-append (substring string 0 n)
+                        "..."))))
 
  )

@@ -31,7 +31,9 @@
          tagged-list?
          inexact->exact
          exact->inexact
-         repl)
+         repl
+         ->string
+         ->string:n)
 
  (import (rnrs)
          (scheme-tools repl)

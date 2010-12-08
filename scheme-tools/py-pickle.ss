@@ -282,7 +282,8 @@
    ((list? x)    (format "(l~aa~a"
                          (py-pickle-object (car x))
                          (py-pickle-list (cdr x))))
-   (else (display "scheme-tools/py-pickle: unsupported data type! \n"))))
+   (else (display "scheme-tools/py-pickle: unsupported data type! \n")
+         (display x))))
 
 ;; ...........................................................................
 ;; for lists we have to make sure the 'a' (for append) in the protocol

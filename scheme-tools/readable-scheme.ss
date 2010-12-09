@@ -14,12 +14,16 @@
          all
          tagged-list?
          symbol-maker
+         get-counter
+         sym+num
+         sym+num->num
          pe
          call&return
          ->string
          ->string:n)
 
- (import (rnrs))
+ (import (_srfi :1)
+         (rnrs))
 
  (define true #t)
 
@@ -49,12 +53,31 @@
         (not (null? obj))
         (eq? (car obj) tag)))
 
+ (define (sym+num sym num)
+   (string->symbol
+    (string-append
+     (symbol->string sym)
+     (number->string num))))
+
+ (define (sym+num->num sn)
+   (string->number
+    (list->string
+     (reverse
+      (take-while char-numeric?
+                  (reverse
+                   (string->list
+                    (symbol->string sn))))))))
+
  (define (symbol-maker sym)
+   (let ([counter (get-counter)])
+     (lambda () (sym+num sym (counter)))))
+
+ (define (get-counter)
    (let ([s 0])
      (lambda ()
        (begin
          (set! s (+ s 1))
-         (string->symbol (string-append (symbol->string sym) (number->string s)))))))
+         s))))
 
  (define (pe . args)
    (for-each display args))

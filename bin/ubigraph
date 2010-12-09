@@ -30,12 +30,9 @@ def handle(msg):
         last_edge = G.new_edge(msg[1], msg[2])
         G.set_edge_attribute(last_edge, "label", msg[3])
     elif msg[0] == "edge_attrib":
-        G.set_edge_attribute(last_edge, msg[0], msg[1])
+        G.set_edge_attribute(last_edge, msg[1], msg[2])
     elif msg[0] == "node_attrib":
-        if len(msg) == 2:
-            G.set_edge_attribute(last_node, msg[0], msg[1])
-        else:
-            G.set_edge_attribute(msg[0], msg[1], msg[2])
+        G.set_vertex_attribute(msg[1], msg[2], msg[3])
     elif msg[0] == "reset":
         G.clear()
 

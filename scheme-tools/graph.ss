@@ -20,10 +20,13 @@
          graph:set-root!
          graph:add-node!
          graph:children
+         graph:child-links
          graph:parent-links
          graph:link!
          graph:add-child!
          graph:node-exists?
+         graph:leaf?
+         graph:root?
          link->label
          link->weight
          link->target)
@@ -78,6 +81,9 @@
    (let ([links (hash-table-ref/default (graph:table graph) node '())])
      (map link->target links)))
 
+ (define (graph:child-links graph node)
+   (hash-table-ref/default (graph:table graph) node '()))
+
  (define (graph:parent-links graph node)
    (hash-table-ref/default (graph:uptable graph) node '()))
 
@@ -113,5 +119,11 @@
  (define (graph:add-child! graph node child label weight)
    (graph:add-node! graph child)
    (graph:link! graph node child label weight))
+
+ (define (graph:leaf? graph node)
+   (null? (graph:children graph node)))
+
+ (define (graph:root? graph node)
+   (requal? node (graph:root graph)))
 
  )

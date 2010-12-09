@@ -1,5 +1,10 @@
 (library
 
+;; WARNING:
+;; This identifies all procedures for the purpose of hashing. We
+;; assume that any object given fully mirrors procedure information in
+;; an accessible way.
+
  (scheme-tools mem)
 
  (export mem)

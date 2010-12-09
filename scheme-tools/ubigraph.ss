@@ -28,10 +28,8 @@
  (define (ubi-edge-attrib attrib val)
    (ubigraph 'edge_attrib attrib val))
 
- (define ubi-node-attrib
-   (match-lambda
-    [(attrib val) (ubigraph 'node_attrib attrib val)]
-    [(id attrib val) (ubigraph 'node_attrib id attrib val)]))
+ (define (ubi-node-attrib id attrib val)
+   (ubigraph 'node_attrib id attrib val))
 
  (define (ubi-reset)
    (ubigraph 'reset))

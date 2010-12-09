@@ -16,6 +16,9 @@
          system
          fprintf
          symbol-maker
+         get-counter
+         sym+num
+         sym+num->num
          rest
          pair
          true

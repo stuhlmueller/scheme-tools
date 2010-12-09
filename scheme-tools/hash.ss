@@ -3,8 +3,9 @@
 ;; hasher that can deal with recursive references
 
 ;; WARNING:
-;; This throws out procedures. We assume that any object given fully
-;; mirrors procedure information in an accessible way.
+;; This identifies all procedures for the purpose of hashing. We
+;; assume that any object given fully mirrors procedure information in
+;; an accessible way.
 
 (library
 

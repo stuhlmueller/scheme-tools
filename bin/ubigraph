@@ -27,10 +27,21 @@ def handle(msg):
         last_node = G.new_vertex_w_id(msg[1])
         G.set_vertex_attribute(msg[1], "label", msg[2])
     elif msg[0] == "edge":
-        last_edge = G.new_edge(msg[1], msg[2])
-        G.set_edge_attribute(last_edge, "label", msg[3])
+        if len(msg) == 4:
+            last_edge = G.new_edge(msg[1], msg[2])
+        elif len(msg) == 5:
+            G.new_edge_w_id(msg[1], msg[2], msg[3])
+            last_edge = msg[1]
+        else:
+            raise Exception, msg
+        G.set_edge_attribute(last_edge, "label", msg[-1])
     elif msg[0] == "edge_attrib":
-        G.set_edge_attribute(last_edge, msg[1], msg[2])
+        if len(msg) == 3:
+            G.set_edge_attribute(last_edge, msg[1], msg[2])
+        elif len(msg) == 4:
+            G.set_edge_attribute(msg[1], msg[2], msg[3])
+        else:
+            raise Exception, msg
     elif msg[0] == "node_attrib":
         G.set_vertex_attribute(msg[1], msg[2], msg[3])
     elif msg[0] == "reset":

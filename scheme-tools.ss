@@ -36,10 +36,13 @@
          exact->inexact
          repl
          ->string
-         ->string:n)
+         ->string:n
+         time-diff
+         time-wait)
 
  (import (rnrs)
          (scheme-tools repl)
+         (scheme-tools time)
          (scheme-tools readable-scheme)
          (scheme-tools external))
 

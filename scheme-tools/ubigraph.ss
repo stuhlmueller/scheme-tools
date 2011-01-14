@@ -16,7 +16,7 @@
          (scheme-tools external)
          (scheme-tools py-pickle))
 
- (define ubigraph-port (open-py-port "ubigraph"))
+ (define ubigraph-port #f)
 
  (define (ubigraph . args)
    (py-pickle ubigraph-port args))
@@ -40,6 +40,8 @@
    (ubigraph 'node_attrib id attrib val))
 
  (define (ubi-reset)
+   (when (not ubigraph-port)
+         (set! ubigraph-port (open-py-port "ubigraph")))
    (ubigraph 'reset))
 
  )

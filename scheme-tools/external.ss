@@ -4,25 +4,27 @@
 
  (scheme-tools external)
 
- (export delay
-         force
-         define/curry
+ (export $
+         assert
          compose
+         define/curry
+         define/kw
+         delay
+         exact->inexact
+         force
          format
-         void
-         $
+         fprintf
+         gensym
+         inexact->exact
+         lambda/kw
          match-lambda
          pretty-print
-         gensym
-         define/kw
-         lambda/kw
-         inexact->exact
-         exact->inexact
          system
-         fprintf)
+         void)
 
  (import (rnrs)
          (only (ikarus)
+               assert
                pretty-print
                gensym
                inexact->exact

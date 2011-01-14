@@ -4,45 +4,47 @@
 
  (scheme-tools)
 
- (export delay
-         force
-         define/curry
-         compose
-         $
-         match-lambda
-         pretty-print
-         format
-         gensym
-         system
-         fprintf
-         symbol-maker
-         get-counter
-         sym+num
-         sym+num->num
-         rest
-         pair
-         true
-         false
-         true?
-         false?
-         define/kw
-         lambda/kw
-         sum
-         all
-         pe
-         call&return
-         tagged-list?
-         inexact->exact
-         exact->inexact
-         repl
+ (export $
          ->string
          ->string:n
-         time-diff
-         time-wait
+         all
+         assert
+         call&return
+         compose
          current-time
-         time-nanosecond)
+         define/curry
+         define/kw
+         delay
+         exact->inexact
+         false
+         false?
+         force
+         format
+         fprintf
+         gensym
+         get-counter
+         inexact->exact
+         lambda/kw
+         match-lambda
+         pair
+         pe
+         pretty-print
+         repl
+         rest
+         sum
+         sym+num
+         sym+num->num
+         symbol-maker
+         system
+         tagged-list?
+         time-diff
+         time-nanosecond
+         time-wait
+         true
+         true?)
 
  (import (rnrs)
+         (srfi :19)
          (scheme-tools repl)
          (scheme-tools time)
          (scheme-tools readable-scheme)

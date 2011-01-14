@@ -10,7 +10,7 @@
  (export mem)
 
  (import (rnrs)
-         (only (_srfi :1) first second)
+         (only (srfi :1) first second)
          (scheme-tools readable-scheme)
          (scheme-tools hash))
  

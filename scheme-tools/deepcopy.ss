@@ -13,7 +13,7 @@
          (scheme-tools)
          (scheme-tools table)
          (rnrs mutable-pairs)
-         (only (_srfi :1) iota))
+         (only (srfi :1) iota))
 
  (define (%deepcopy obj table)
    (cond [(pair? obj)

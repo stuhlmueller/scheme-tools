@@ -38,7 +38,9 @@
          ->string
          ->string:n
          time-diff
-         time-wait)
+         time-wait
+         current-time
+         time-nanosecond)
 
  (import (rnrs)
          (scheme-tools repl)

@@ -34,7 +34,7 @@
  (import (rnrs)
          (scheme-tools readable-scheme)
          (scheme-tools external)
-         (except (_srfi :69) string-hash string-ci-hash))
+         (except (srfi :69) string-hash string-ci-hash))
 
  (define/kw (finitize obj)
    (define seen '())

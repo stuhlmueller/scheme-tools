@@ -22,7 +22,7 @@
          ->string
          ->string:n)
 
- (import (_srfi :1)
+ (import (srfi :1)
          (rnrs))
 
  (define true #t)

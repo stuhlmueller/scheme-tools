@@ -32,7 +32,7 @@
          link->target)
 
  (import (rnrs)
-         (_srfi :1)
+         (srfi :1)
          (scheme-tools hash)
          (scheme-tools external)
          (scheme-tools readable-scheme))

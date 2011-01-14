@@ -8,7 +8,7 @@
          time-wait)
 
  (import (rnrs)
-         (_srfi :19)
+         (srfi :19)
          (scheme-tools external))
 
  (define (time-diff now last)

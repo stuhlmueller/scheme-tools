@@ -14,3 +14,4 @@ Uses:
 
 * [xitomatl library](https://code.launchpad.net/~derick-eddington/scheme-libraries/xitomatl)
 * [srfi library](https://code.launchpad.net/~scheme-libraries-team/scheme-libraries/srfi)
+* MIT-Church math library and FFI (by David Wingate)

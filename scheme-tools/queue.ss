@@ -19,8 +19,7 @@
 
  (import (xitomatl queue)
          (xitomatl curry)
-         (rnrs)
-         (only (srfi :1) find))
+         (rnrs))
 
  (define/curry (in-queue? eql q obj)
    (if (find (lambda (x) (eql obj x)) (queue->list q)) #t #f))

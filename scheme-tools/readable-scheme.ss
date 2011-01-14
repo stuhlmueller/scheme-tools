@@ -22,7 +22,7 @@
          ->string
          ->string:n)
 
- (import (srfi :1)
+ (import (scheme-tools srfi-compat :1)
          (rnrs))
 
  (define true #t)

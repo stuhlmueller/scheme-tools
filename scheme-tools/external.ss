@@ -7,9 +7,12 @@
  (export $
          assert
          compose
+         console-input-port
          define/curry
          define/kw
          delay
+         environment
+         eval
          exact->inexact
          force
          format
@@ -17,7 +20,10 @@
          gensym
          inexact->exact
          lambda/kw
+         make-parameter
          match-lambda
+         modulo
+         parameterize
          pretty-print
          system
          void)
@@ -25,14 +31,20 @@
  (import (rnrs)
          (only (ikarus)
                assert
-               pretty-print
-               gensym
-               inexact->exact
+               console-input-port
+               environment
+               eval
                exact->inexact
                format
-               void
+               fprintf
+               gensym
+               inexact->exact
+               make-parameter               
+               modulo
+               parameterize
+               pretty-print
                system
-               fprintf)
+               void)
          (only (rnrs r5rs) delay force)
          (only (xitomatl keywords) define/kw lambda/kw)
          (only (xitomatl curry) define/curry)

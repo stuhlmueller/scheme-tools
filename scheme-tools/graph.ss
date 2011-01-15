@@ -43,7 +43,7 @@
            (mutable uptable graph:uptable graph:set-uptable!))
    (protocol
     (lambda (p)
-      (lambda () (p 'empty (make-hash-table) (make-hash-table))))))
+      (lambda () (p 'empty (make-finitize-hash-table) (make-finitize-hash-table))))))
 
  (define link->label first)
 
@@ -96,19 +96,19 @@
          (hash-table-set! table
                           parent
                           (pair new-link links))
-         (assert (requal? old-link new-link)))))
+         (assert (finitize-equal? old-link new-link)))))
 
  ;; find old link using source/target
  (define (table:add-parent! table parent child label weight)
    (let* ([links (hash-table-ref table child)]
-          [old-link (find (lambda (link) (and (requal? (link->target link) parent)
+          [old-link (find (lambda (link) (and (finitize-equal? (link->target link) parent)
                                          (equal? (link->label link) label))) links)]
           [new-link (pair label (pair weight parent))])
      (if (false? old-link)
          (hash-table-set! table
                           child
                           (pair new-link links))
-         (assert (requal? old-link new-link)))))
+         (assert (finitize-equal? old-link new-link)))))
 
  ;; child - v, p -> parent | label not unique, probabilities don't sum to 1
  ;; parent - v, p -> child | label unique, probabilities sum to 1
@@ -124,6 +124,6 @@
    (null? (graph:children graph node)))
 
  (define (graph:root? graph node)
-   (requal? node (graph:root graph)))
+   (finitize-equal? node (graph:root graph)))
 
  )

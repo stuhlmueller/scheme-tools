@@ -30,7 +30,7 @@
    (get/make-alist-entry memtables
                          (lambda (k v) (set! memtables (pair (pair k v) memtables)))
                          f
-                         (lambda () (make-hash-table))))
+                         (lambda () (make-finitize-hash-table))))
 
  (define (mem f)
    (lambda args

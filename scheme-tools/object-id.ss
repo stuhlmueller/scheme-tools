@@ -21,14 +21,14 @@
 
  (define obj-id-maker (get-counter))
  
- (define obj->id-table (make-hash-table))
+ (define obj->id-table (make-finitize-hash-table))
  
- (define id->obj-table (make-hash-table))
+ (define id->obj-table (make-eq-hash-table))
 
  (define (reset-object-ids!)
    (set! obj-id-maker (get-counter))
-   (set! obj->id-table (make-hash-table))
-   (set! id->obj-table (make-hash-table)))
+   (set! obj->id-table (make-finitize-hash-table))
+   (set! id->obj-table (make-eq-hash-table)))
 
  (define (make-object-id-entries obj id)
    (hash-table-set! obj->id-table

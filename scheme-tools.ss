@@ -11,10 +11,13 @@
          assert
          call&return
          compose
+         console-input-port
          current-time
          define/curry
          define/kw
          delay
+         environment
+         eval
          exact->inexact
          false
          false?
@@ -25,8 +28,11 @@
          get-counter
          inexact->exact
          lambda/kw
+         make-parameter         
          match-lambda
+         modulo
          pair
+         parameterize
          pe
          pretty-print
          repl

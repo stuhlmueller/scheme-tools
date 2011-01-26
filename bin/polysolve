@@ -1,0 +1,165 @@
+#!/usr/bin/python
+import collections
+import datetime
+import logging
+import pickle
+import re
+import subprocess
+import sys
+import time
+from pprint import pprint
+from itertools import cycle,imap
+
+logging.basicConfig(filename='/tmp/polysolve.log', level=logging.DEBUG)
+
+def log(s):
+    logging.debug("(%s) %s" % (str(datetime.datetime.now()), s))
+
+## eqns = [["=", ["+", ["*", 2, "x"], ["*", 3, "y"]], 4]]
+## eqns += [["=", ["+", ["*", 6, "x"], ["*", 1, "y"]], 8]]
+
+## list(flatten(eqns))
+#. ['=', '+', '*', 2, 'x', '*', 3, 'y', 4, '=', '+', '*', 6, 'x', '*', 1, 'y', 8]
+def flatten(l):
+    for el in l:
+        if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
+            for sub in flatten(el):
+                yield sub
+        else:
+            yield el
+
+def unknowns(eqns):
+    return set(i for i in flatten(eqns) if re.sub("[.0-9=+* \n()]+", "", str(i)))
+            
+## count_unknowns(eqns)
+#. 2
+def count_unknowns(eqns):
+    u = unknowns(eqns)
+    log("unknowns: %s" % str(u))
+    return len(u)
+
+## pprint(transform_eqns(eqns))
+#. [['-', ['+', ['*', 2, 'x'], ['*', 3, 'y']], 4],
+#.  ['-', ['+', ['*', 6, 'x'], ['*', 1, 'y']], 8]]
+#. 
+def transform_eqns(eqns):
+    return [["-"] + eqn[1:] for eqn in eqns]
+
+## print eqns_text(transform_eqns(eqns))
+#. (((2 * x) + (3 * y)) - 4);
+#. (((6 * x) + (1 * y)) - 8);
+#. 
+def eqns_text(eqns):
+    return "\n".join([eqn_text(eqn) + ";" for eqn in eqns])
+
+## list(fromeach([1,2,3], ["a","b","c"]))
+#. [1, 'a', 2, 'b', 3, 'c']
+def fromeach(*iters):
+    return (x.next() for x in cycle(imap(iter,iters)))
+
+## infix(["+"])
+#. ['+']
+## infix(["+", 1, 2])
+#. [1, '+', 2]
+## infix(["+", 1, 2, 3])
+#. [1, '+', 2, '+', 3]
+def infix(lst):
+    if len(lst) == 1:
+        return lst
+    else:
+        return list(fromeach(lst[1:], [lst[0]]*len(lst[1:])))[:-1]
+
+## eqn_text(eqns[0])
+#. '(((2 * x) + (3 * y)) = 4)'
+def eqn_text(eqn):
+    if type(eqn) == type([]):
+        return "(" + " ".join(infix([eqn_text(i) for i in eqn])) + ")"
+    else:
+        return str(eqn)
+
+## print phc_in(eqns)
+#. 2 2
+#. (((2 * x) + (3 * y)) - 4);
+#. (((6 * x) + (1 * y)) - 8);
+#. 
+def phc_in(eqns):
+    settings = {
+        "num_eqns" : len(eqns),
+        "num_unknowns" : count_unknowns(eqns),
+        "eqns" : eqns_text(transform_eqns(eqns))
+    }
+    return "%(num_eqns)s %(num_unknowns)s\n%(eqns)s" % settings
+
+## timestamp()
+#. 1296012784.0
+def timestamp():
+    return time.mktime(datetime.datetime.now().timetuple())
+
+## call("echo 'hi!'")
+#. 'hi!\n'
+def call(cmd):
+    child = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    o = ""
+    while True:
+        out = child.stdout.read(1)
+        o += out
+        if out == '' and child.poll() != None:
+            break
+    return o
+
+def parse_results(eqns, results):
+    try:
+        solutions = []
+        for solution_text in results.split("="*75)[1:]:
+            solution = []
+            for unknown in unknowns(eqns):
+                solution.append([unknown, float(re.findall(" %s \:  (.+?) " % unknown, solution_text)[0])])
+            solutions.append(solution)
+    except:
+        print results
+        print "Solution parser failed."
+        return []
+    else:
+        return solutions
+
+def pickle_solve():
+    eqns = []
+    while True:
+        try:
+            eqn = pickle.load(sys.stdin)
+            if eqn == "solve":
+                break
+            eqns.append(eqn)
+        except EOFError:
+            break
+    results = solve(eqns)
+    pickle.dump(results, sys.stdout)
+    sys.stdout.flush()    
+
+## solve(eqns)
+#. [[['y', 0.5], ['x', 1.25]]]
+def solve(eqns):
+    id = str(timestamp())
+    infile = "/tmp/poly.%s.in" % id
+    outfile = "/tmp/poly.%s.out" % id
+    # write polynomials to file
+    f = open(infile, "w")
+    f.write(phc_in(eqns))
+    f.close()
+    # call phc
+    phc_cmd = "phc -b %s %s" % (infile, outfile)
+    log("PHC command: '%s'" % phc_cmd)
+    s = call(phc_cmd)
+    log("PHC output: '%s'" % s)
+    # parse output
+    try:
+        f = open(outfile)
+    except:
+        return "Output file not found."
+    else:
+        results = f.read()
+        f.close()
+        return parse_results(eqns, results)    
+
+if __name__ == "__main__":
+    pickle_solve()

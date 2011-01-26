@@ -6,9 +6,14 @@ Requires:
 
 Optional:
 
-* [glpk](http://www.gnu.org/software/glpk/)
-* [pymprog-0.4](http://sourceforge.net/projects/pymprog/files/pymprog-0.4/)
-* [ubigraph](http://ubietylab.net/ubigraph/)
+* To solve systems of linear equations:
+    * [glpk](http://www.gnu.org/software/glpk/)
+    * [pymprog-0.4](http://sourceforge.net/projects/pymprog/files/pymprog-0.4/)
+* To solve systems of polynomials:
+    * [pexpect](http://www.noah.org/wiki/pexpect)
+    * [PHCpack](http://www.math.uic.edu/~jan/download.html)
+* To visualize graphs:
+    * [ubigraph](http://ubietylab.net/ubigraph/)
 
 Includes:
 

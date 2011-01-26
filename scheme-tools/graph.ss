@@ -21,6 +21,7 @@
          graph:add-node!
          graph:children
          graph:child-links
+         graph:parents         
          graph:parent-links
          graph:link!
          graph:add-child!
@@ -78,11 +79,13 @@
          (hash-table-set! (graph:uptable graph) node '())))
 
  (define (graph:children graph node)
-   (let ([links (hash-table-ref/default (graph:table graph) node '())])
-     (map link->target links)))
+   (map link->target (graph:child-links graph node)))
 
  (define (graph:child-links graph node)
    (hash-table-ref/default (graph:table graph) node '()))
+
+ (define (graph:parents graph node)
+   (map link->target (graph:parent-links graph node)))
 
  (define (graph:parent-links graph node)
    (hash-table-ref/default (graph:uptable graph) node '()))

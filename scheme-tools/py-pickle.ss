@@ -320,7 +320,7 @@
 
 (define (py-unpickle-stack port stack)
   (let ((c (get-char port)))
-    ; (display (format "char ~a stack ~a\n" c stack))
+    ;; (display (format "char ~a stack ~a\n" c stack))
     (cond
      ;; this should not happen because the input should end with a
      ;; . before end of file is reached

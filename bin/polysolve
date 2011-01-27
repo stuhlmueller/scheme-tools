@@ -7,16 +7,18 @@ import re
 import subprocess
 import sys
 import time
+import pexpect
 from pprint import pprint
 from itertools import cycle,imap
 
-logging.basicConfig(filename='/tmp/polysolve.log', level=logging.DEBUG)
+LOGFILE = '/tmp/polysolve.log'
+logging.basicConfig(filename=LOGFILE, level=logging.DEBUG)
 
 def log(s):
-    logging.debug("(%s) %s" % (str(datetime.datetime.now()), s))
+    logging.debug("\n(%s) %s" % (str(datetime.datetime.now()), s))
 
-## eqns = [["=", ["+", ["*", 2, "x"], ["*", 3, "y"]], 4]]
-## eqns += [["=", ["+", ["*", 6, "x"], ["*", 1, "y"]], 8]]
+eqns = [["=", ["+", ["*", 2, "x"], ["*", 3, "y"]], 4]]
+eqns += [["=", ["+", ["*", 6, "x"], ["*", 1, "y"]], 8]]
 
 ## list(flatten(eqns))
 #. ['=', '+', '*', 2, 'x', '*', 3, 'y', 4, '=', '+', '*', 6, 'x', '*', 1, 'y', 8]
@@ -28,6 +30,8 @@ def flatten(l):
         else:
             yield el
 
+## unknowns(eqns)
+#. set(['y', 'x'])
 def unknowns(eqns):
     return set(i for i in flatten(eqns) if re.sub("[.0-9=+* \n()]+", "", str(i)))
             
@@ -91,7 +95,7 @@ def phc_in(eqns):
     return "%(num_eqns)s %(num_unknowns)s\n%(eqns)s" % settings
 
 ## timestamp()
-#. 1296012784.0
+#. 1296164537.0
 def timestamp():
     return time.mktime(datetime.datetime.now().timetuple())
 
@@ -107,20 +111,37 @@ def call(cmd):
             break
     return o
 
-def parse_results(eqns, results):
+def parse_result(eqns, result):
     try:
         solutions = []
-        for solution_text in results.split("="*75)[1:]:
+        for solution_text in result.split("== err")[:-1]:
+            log("solution_text: %s" % solution_text)
             solution = []
             for unknown in unknowns(eqns):
-                solution.append([unknown, float(re.findall(" %s \:  (.+?) " % unknown, solution_text)[0])])
+                unknown_solutions = re.findall("\s+%s\s+\:\s+(.+?)\s" % unknown, solution_text)
+                assert len(unknown_solutions) == 1, "(unknown %s, sols: %s)" % (unknown, unknown_solutions)
+                solution.append([unknown, float(unknown_solutions[0])])
             solutions.append(solution)
-    except:
-        print results
-        print "Solution parser failed."
+    except Exception, e:
+        log("Parsing exception %s for result: \n%s" % (e, result))
         return []
     else:
-        return solutions
+        log("Solutions: %s" % solutions)
+        return solutions    
+
+def parse_results(eqns, results):
+    refs = re.findall("See the file (.*?) for solutions of dimension", results)
+    if refs == []:
+        solutions = parse_result(eqns, results)
+    else:
+        solutions = []
+        for ref in refs:
+            f = open(ref)
+            result = f.read()
+            f.close()
+            solution = parse_result(eqns, result)
+            solutions += solution
+    return solutions
 
 def pickle_solve():
     eqns = []
@@ -134,10 +155,43 @@ def pickle_solve():
             break
     results = solve(eqns)
     pickle.dump(results, sys.stdout)
-    sys.stdout.flush()    
+    sys.stdout.flush()
 
-## solve(eqns)
-#. [[['y', 0.5], ['x', 1.25]]]
+def expect(proc, s):
+    log("expecting: %s" % s)
+    index = proc.expect(s)
+    log("ok. index: %i. before: %s" % (index, proc.before))
+    return index
+    
+def call_phc(infile, outfile):
+    settings = {
+        "outfile" : outfile
+    }
+    interactions = [
+        ("Give a string of characters : ", "%(outfile)s"),
+        ("Do you have already a witness set for the first equations ? ", "n"),
+        ("Do you want to destroy this file ? (y/n) ", "y"),
+        ("Type 0, 1, 2, 3, or 4 for your shuffle selection : ", "0"),
+        ("Do you want stepping stones of indetermediate witness sets ? ", "n"),
+        (re.compile(".*Type a number to change \(0 to exit\).*"), "0"),
+        ("Type a number between 0 and 8 to select output information : ", "0"),
+        (pexpect.EOF, None)
+    ]
+    phc_cmd = "/bin/bash -c 'phc -b %s %s'" % (infile, outfile) # | tee -a %s LOGFILE
+    log("PHC command: '%s'" % phc_cmd)
+    phc = pexpect.spawn(phc_cmd)    
+    while phc.isalive():
+        index = phc.expect([k for (k, v) in interactions])
+        message = interactions[index]
+        log("PHC interaction: %s" % str(message))
+        response = interactions[index][1]
+        if response == None:
+            log("PHC: EOF")
+            break
+        else:
+            phc.sendline(response % settings)
+    log("PHC: Done.")
+
 def solve(eqns):
     id = str(timestamp())
     infile = "/tmp/poly.%s.in" % id
@@ -147,10 +201,7 @@ def solve(eqns):
     f.write(phc_in(eqns))
     f.close()
     # call phc
-    phc_cmd = "phc -b %s %s" % (infile, outfile)
-    log("PHC command: '%s'" % phc_cmd)
-    s = call(phc_cmd)
-    log("PHC output: '%s'" % s)
+    call_phc(infile, outfile)
     # parse output
     try:
         f = open(outfile)
@@ -162,4 +213,5 @@ def solve(eqns):
         return parse_results(eqns, results)    
 
 if __name__ == "__main__":
+    # pprint(solve(eqns))
     pickle_solve()

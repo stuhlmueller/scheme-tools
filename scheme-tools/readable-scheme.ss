@@ -17,6 +17,7 @@
          get-counter
          sym+num
          sym+num->num
+         sym-append
          pe
          call&return
          ->string
@@ -58,6 +59,9 @@
     (string-append
      (symbol->string sym)
      (number->string num))))
+
+ (define (sym-append . syms)
+   (string->symbol (apply string-append (map ->string syms))))
 
  (define (sym+num->num sn)
    (string->number

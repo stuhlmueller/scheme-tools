@@ -18,6 +18,7 @@
          close-py-ports)
 
  (import (rnrs)
+         (rnrs mutable-pairs)
          (scheme-tools external))
 
 ;; =============================================================================
@@ -306,8 +307,21 @@
 
 (define (py-unpickle port)
   (if (pair? port)
-      (py-unpickle-stack (cdr port) '())
-      (py-unpickle-stack port '())))
+      (py-unpickle-stack (cdr port) '() (make-memory))
+      (py-unpickle-stack port '() (make-memory))))
+
+;; ............................................................................
+;; memory
+
+(define (make-memory)
+  (cons 'memory '()))
+
+(define (memory-put! memory obj i)
+  (set-cdr! memory
+            (cons (cons i obj) (cdr memory))))
+
+(define (memory-get memory i)
+  (cdr (assoc i (cdr memory))))
 
 ;; ............................................................................
 ;; wrapper for string variant
@@ -318,7 +332,7 @@
 ;; ............................................................................
 ;; actual function that does the work
 
-(define (py-unpickle-stack port stack)
+(define (py-unpickle-stack port stack memory)
   (let ((c (get-char port)))
     ;; (display (format "char ~a stack ~a\n" c stack))
     (cond
@@ -329,15 +343,15 @@
         (display "scheme-tools/py-pickle: eof before '.'! \n")
         '()))
      ;; otherwise let's see what character we have
-     ((char=? c #\.) (py-unpickle-stop port stack))
-     ((char=? c #\S) (py-unpickle-strg port stack))
-     ((char=? c #\I) (py-unpickle-nmbr port stack))
-     ((char=? c #\F) (py-unpickle-nmbr port stack))
-     ((char=? c #\() (py-unpickle-mark port stack))
-     ((char=? c #\l) (py-unpickle-list port stack))
-     ((char=? c #\a) (py-unpickle-apnd port stack))
-     ((char=? c #\p) (py-unpickle-put port stack))
-     ((char=? c #\g) (py-unpickle-get port stack))
+     ((char=? c #\.) (py-unpickle-stop port stack memory))
+     ((char=? c #\S) (py-unpickle-strg port stack memory))
+     ((char=? c #\I) (py-unpickle-nmbr port stack memory))
+     ((char=? c #\F) (py-unpickle-nmbr port stack memory))
+     ((char=? c #\() (py-unpickle-mark port stack memory))
+     ((char=? c #\l) (py-unpickle-list port stack memory))
+     ((char=? c #\a) (py-unpickle-apnd port stack memory))
+     ((char=? c #\p) (py-unpickle-put port stack memory))
+     ((char=? c #\g) (py-unpickle-get port stack memory))
      (else (begin
              (display "scheme-tools/py-pickle: read unknown symbol! \n")
              (display c)
@@ -346,7 +360,7 @@
 ;; ............................................................................
 ;; '.' we have reached the stop symbol
 
-(define (py-unpickle-stop port stack)
+(define (py-unpickle-stop port stack memory)
   ;; the stack should have only one element now
   (if (= (length stack) 1)
       (car stack)
@@ -360,24 +374,25 @@
 ;; machine since it only occurs with '(l' for the simple data
 ;; types that we want to recover here
 
-(define (py-unpickle-mark port stack)
-  (py-unpickle-stack port stack))
+(define (py-unpickle-mark port stack memory)
+  (py-unpickle-stack port stack memory))
 
 ;; ............................................................................
 ;; 'l' starts a new list and puts it on the stack of lists
 
-(define (py-unpickle-list port stack)
-  (py-unpickle-stack port (cons '() stack)))
+(define (py-unpickle-list port stack memory)
+  (py-unpickle-stack port (cons '() stack) memory))
 
 ;; ............................................................................
 ;; 'a' appends the object on top of the stack to the previous list
 
-(define (py-unpickle-apnd port stack)
+(define (py-unpickle-apnd port stack memory)
   (if (> (length stack) 1)
       (py-unpickle-stack port
                          (cons (append (cadr stack)
                                        (list (car stack)))
-                               (cddr stack)))
+                               (cddr stack))
+                         memory)
       ;; complain if there are less than two lists on the stack     
       (begin
         (display "scheme-tools/py-pickle: nothing to append to! \n")
@@ -386,23 +401,25 @@
 ;; ............................................................................
 ;; 'S' push a string on the stack
 
-(define (py-unpickle-strg port stack)
+(define (py-unpickle-strg port stack memory)
   (let*
       ((ss (get-line port))                           ; this has '' around it
        (s (substring                                  ; this hasn't
            ss 1 (- (string-length ss) 1))))           ; (strings start at 0)
     (py-unpickle-stack port
-                       (cons s stack))))
+                       (cons s stack)
+                       memory)))
 
 ;; ............................................................................
 ;; 'I' or 'F' push a number on the stack
 
-(define (py-unpickle-nmbr port stack)
+(define (py-unpickle-nmbr port stack memory)
   (let*
       ((s (get-line port))                            ; this is a string
        (n (string->number s)))                        ; and this is a number
     (py-unpickle-stack port
-                       (cons n stack))))
+                       (cons n stack)
+                       memory)))
 
 ;; ............................................................................
 ;; 'p' put: store a value so that you can use it later with get. This
@@ -410,20 +427,20 @@
 ;; want to implement it you might want to use an additional argument
 ;; to pass around.
 
-(define (py-unpickle-put port stack)
-  (get-line port)
-  (py-unpickle-stack port stack))
+(define (py-unpickle-put port stack memory)
+  (let ([i (get-line port)])
+    (memory-put! memory (car stack) i)
+    (py-unpickle-stack port stack memory)))
 
 ;; ............................................................................
 ;; 'g' get: get a value from the memory of the pickle machine. If
 ;; someone tries to do that return the empty list and warn about the
 ;; fact that this is not implemented
 
-(define (py-unpickle-get port stack)
-  (begin
-    (display "scheme-tools/py-pickle: get is not implemented! \n")
-    '()))
-
+(define (py-unpickle-get port stack memory)
+  (let* ([i (get-line port)]
+         [obj (memory-get memory i)])
+    (py-unpickle-stack port (cons obj stack) memory)))
 
 ;; =============================================================================
 ;; end of library

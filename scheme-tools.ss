@@ -40,6 +40,7 @@
          sum
          sym+num
          sym+num->num
+         sym-append
          symbol-maker
          system
          tagged-list?

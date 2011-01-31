@@ -14,7 +14,7 @@
          (scheme-tools property)
          (scheme-tools watcher)
          (scheme-tools graph graph)
-         (scheme-tools graph traverse))
+         (scheme-tools graph utils))
 
  (define (graph->callback-registry graph)
    (get/set-property graph

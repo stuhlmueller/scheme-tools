@@ -4,25 +4,26 @@
 
  (scheme-tools readable-scheme)
 
- (export rest
-         pair
-         true
-         false
-         true?
-         false?
-         sum
+ (export ->string
+         ->string:n
          all
-         repeat
-         tagged-list?
-         symbol-maker
+         call&return
+         false
+         false?
          get-counter
+         map-enumerate
+         pair
+         pe
+         repeat
+         sum
          sym+num
          sym+num->num
          sym-append
-         pe
-         call&return
-         ->string
-         ->string:n)
+         symbol-maker
+         tagged-list?
+         true
+         true?
+         rest)
 
  (import (scheme-tools srfi-compat :1)
          (rnrs))
@@ -107,5 +108,11 @@
    (if (= n 0)
        '()
        (cons (proc) (repeat (- n 1) proc))))
+
+ (define (map-enumerate proc . lsts)
+   (apply map
+          (pair proc
+                (pair (iota (length (first lsts)))
+                      lsts))))
 
  )

@@ -28,7 +28,8 @@
          get-counter
          inexact->exact
          lambda/kw
-         make-parameter         
+         make-parameter
+         map-enumerate
          match-lambda
          modulo
          pair

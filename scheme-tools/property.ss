@@ -1,0 +1,29 @@
+#!r6rs
+
+;; Associate arbitrary properties with objects.
+
+(library
+
+ (scheme-tools property)
+
+ (export set-property!
+         get-property)
+
+ (import (rnrs)
+         (scheme-tools readable-scheme)
+         (scheme-tools table))
+
+ (define object-properties (make-table eq?))
+
+ (define (get-property-table obj)
+   (table-lookup/set! object-properties obj (lambda () (make-table eq?))))
+ 
+ (define (set-property! obj property value)
+   (let ([table (get-property-table obj)])
+     (table-add! table property value)))
+
+ (define (get-property obj property)
+   (let ([table (get-property-table obj)])
+     (table-lookup table property (lambda () (error (pair obj property) "property not found")))))
+
+ )

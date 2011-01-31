@@ -35,6 +35,7 @@
          parameterize
          pe
          pretty-print
+         repeat
          repl
          rest
          sum

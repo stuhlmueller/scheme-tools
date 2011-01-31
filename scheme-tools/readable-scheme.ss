@@ -12,6 +12,7 @@
          false?
          sum
          all
+         repeat
          tagged-list?
          symbol-maker
          get-counter
@@ -101,5 +102,10 @@
          string
          (string-append (substring string 0 n)
                         "..."))))
+
+ (define (repeat n proc)
+   (if (= n 0)
+       '()
+       (cons (proc) (repeat (- n 1) proc))))
 
  )

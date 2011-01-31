@@ -25,14 +25,15 @@
  
  (define (mem f)
    (lambda args
-     (let ([mt (get/make-memtable f)])
-       (hash-table-ref mt
-                       args
-                       (lambda () (begin
-                               (when RECURSIVE-MEM-VALUE
-                                     (hash-table-set! mt args RECURSIVE-MEM-VALUE))
-                               (let ([val (apply f args)])
-                                 (hash-table-set! mt args val)
-                                 val)))))))
+     (let ([memtable (get/make-memtable f)])
+       (hash-table-ref
+        memtable
+        args
+        (lambda () (begin
+                (when RECURSIVE-MEM-VALUE
+                      (hash-table-set! memtable args RECURSIVE-MEM-VALUE))
+                (let ([val (apply f args)])
+                  (hash-table-set! memtable args val)
+                  val)))))))
 
  )

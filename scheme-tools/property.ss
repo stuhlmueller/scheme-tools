@@ -7,7 +7,8 @@
  (scheme-tools property)
 
  (export set-property!
-         get-property)
+         get-property
+         get/set-property)
 
  (import (rnrs)
          (scheme-tools srfi-compat :1)
@@ -28,5 +29,11 @@
      (table-lookup table property (if (null? default)
                                       (lambda () (error (pair obj property) "property not found"))
                                       (first default)))))
+
+ (define (get/set-property obj property make-value)
+   (get-property obj property
+                 (lambda () (let ([value (make-value)])
+                         (set-property! obj property value)
+                         value))))
 
  )

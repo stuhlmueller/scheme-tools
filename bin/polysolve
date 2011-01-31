@@ -1,147 +1,83 @@
 #!/usr/bin/python
-import collections
-import datetime
-import logging
-import pickle
-import re
+from polycommon import infix, unknowns, timestamp, log
 import subprocess
 import sys
-import time
-import pexpect
-from pprint import pprint
-from itertools import cycle,imap
+import re
+import pickle
+import os
 
-LOGFILE = '/tmp/polysolve.log'
-logging.basicConfig(filename=LOGFILE, level=logging.DEBUG)
+MATHEMATICA_PATHS = [
+  "/usr/bin/math",
+  "/usr/local/bin/math",
+  "/Applications/Mathematica.app/Contents/MacOS/MathKernel",
+  "/Applications/Mathematica Home Edition.app/Contents/MacOS/MathKernel"
+  ]
 
-def log(s):
-    logging.debug("\n(%s) %s" % (str(datetime.datetime.now()), s))
+MATHEMATICA_CMD = "%(mathpath)s -noprompt -script %(filename)s"
+ 
+eqns = [["=", ["+", ["*", 2, "x"], ["*", 3, "y"]], 4],
+        ["=", ["+", ["*", 6, "x"], ["*", 1, "y"]], 8],
+        ["=", ["*", "z", "z"], 3]]
 
-eqns = [["=", ["+", ["*", 2, "x"], ["*", 3, "y"]], 4]]
-eqns += [["=", ["+", ["*", 6, "x"], ["*", 1, "y"]], 8]]
+TEMPLATE = """
+Sol = NSolve[{ 
+%(equations)s
+           },
+           {%(variables)s},
+           Reals];
 
-## list(flatten(eqns))
-#. ['=', '+', '*', 2, 'x', '*', 3, 'y', 4, '=', '+', '*', 6, 'x', '*', 1, 'y', 8]
-def flatten(l):
-    for el in l:
-        if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
-            for sub in flatten(el):
-                yield sub
-        else:
-            yield el
+Print[Sol];
+"""
 
-## unknowns(eqns)
-#. set(['y', 'x'])
-def unknowns(eqns):
-    return set(i for i in flatten(eqns) if re.sub("[.0-9=+* \n()]+", "", str(i)))
-            
-## count_unknowns(eqns)
-#. 2
-def count_unknowns(eqns):
-    u = unknowns(eqns)
-    log("unknowns: %s" % str(u))
-    return len(u)
+def mathpath():
+    for path in MATHEMATICA_PATHS:
+        if os.path.exists(path):
+            return path
+    return False
 
-## pprint(transform_eqns(eqns))
-#. [['-', ['+', ['*', 2, 'x'], ['*', 3, 'y']], 4],
-#.  ['-', ['+', ['*', 6, 'x'], ['*', 1, 'y']], 8]]
-#. 
-def transform_eqns(eqns):
-    return [["-"] + eqn[1:] for eqn in eqns]
-
-## print eqns_text(transform_eqns(eqns))
-#. (((2 * x) + (3 * y)) - 4);
-#. (((6 * x) + (1 * y)) - 8);
-#. 
 def eqns_text(eqns):
-    return "\n".join([eqn_text(eqn) + ";" for eqn in eqns])
+    return "\n".join([eqn_text(eqn) + "," for eqn in eqns])[:-1]
 
-## list(fromeach([1,2,3], ["a","b","c"]))
-#. [1, 'a', 2, 'b', 3, 'c']
-def fromeach(*iters):
-    return (x.next() for x in cycle(imap(iter,iters)))
-
-## infix(["+"])
-#. ['+']
-## infix(["+", 1, 2])
-#. [1, '+', 2]
-## infix(["+", 1, 2, 3])
-#. [1, '+', 2, '+', 3]
-def infix(lst):
-    if len(lst) == 1:
-        return lst
-    else:
-        return list(fromeach(lst[1:], [lst[0]]*len(lst[1:])))[:-1]
-
-## eqn_text(eqns[0])
-#. '(((2 * x) + (3 * y)) = 4)'
 def eqn_text(eqn):
     if type(eqn) == type([]):
         return "(" + " ".join(infix([eqn_text(i) for i in eqn])) + ")"
     else:
-        return str(eqn)
+        if eqn == "=":
+            return "=="
+        else:
+            return str(eqn)
 
-## print phc_in(eqns)
-#. 2 2
-#. (((2 * x) + (3 * y)) - 4);
-#. (((6 * x) + (1 * y)) - 8);
-#. 
-def phc_in(eqns):
-    settings = {
-        "num_eqns" : len(eqns),
-        "num_unknowns" : count_unknowns(eqns),
-        "eqns" : eqns_text(transform_eqns(eqns))
-    }
-    return "%(num_eqns)s %(num_unknowns)s\n%(eqns)s" % settings
-
-## timestamp()
-#. 1296164537.0
-def timestamp():
-    return time.mktime(datetime.datetime.now().timetuple())
-
-## call("echo 'hi!'")
-#. 'hi!\n'
-def call(cmd):
-    child = subprocess.Popen(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    o = ""
-    while True:
-        out = child.stdout.read(1)
-        o += out
-        if out == '' and child.poll() != None:
-            break
-    return o
-
-def parse_result(eqns, result):
-    try:
-        solutions = []
-        for solution_text in result.split("== err")[:-1]:
-            log("solution_text: %s" % solution_text)
-            solution = []
-            for unknown in unknowns(eqns):
-                unknown_solutions = re.findall("\s+%s\s+\:\s+(.+?)\s" % unknown, solution_text)
-                assert len(unknown_solutions) == 1, "(unknown %s, sols: %s)" % (unknown, unknown_solutions)
-                solution.append([unknown, float(unknown_solutions[0])])
-            solutions.append(solution)
-    except Exception, e:
-        log("Parsing exception %s for result: \n%s" % (e, result))
-        return []
-    else:
-        log("Solutions: %s" % solutions)
-        return solutions    
-
-def parse_results(eqns, results):
-    refs = re.findall("See the file (.*?) for solutions of dimension", results)
-    if refs == []:
-        solutions = parse_result(eqns, results)
-    else:
-        solutions = []
-        for ref in refs:
-            f = open(ref)
-            result = f.read()
-            f.close()
-            solution = parse_result(eqns, result)
-            solutions += solution
+def parse_solutions(txt):
+    solutions = []
+    for solution_txt in re.findall("\{[^\{]+?\}", txt):
+        solution = solution_txt.replace("->", ":")
+        solution = re.sub("([a-z][0-9]*[a-z]?[0-9]*)", "'\\1'", solution)
+        solution = [list(obj) for obj in eval(solution).items()]
+        solutions.append(solution)
     return solutions
+
+def solve(eqns):
+    equations = eqns_text(eqns)    
+    task = TEMPLATE % { "equations" : equations,
+                        "variables" : ", ".join(unknowns(eqns)) }
+    log("task: %s" % task)
+    filename = "/tmp/poly.%s.in" % timestamp()
+    f = open(filename, "w")
+    f.write(task)
+    f.close()
+    cmd = MATHEMATICA_CMD % { "filename" : filename, "mathpath" : mathpath() }
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    results = ""
+    while True:
+        out = process.stdout.read(1)
+        if out == '' and process.poll() != None:
+            break
+        if out != '':
+            results += out
+    log("results: %s" % results)
+    parsed_results = parse_solutions(results)
+    log("parsed results: %s" % parsed_results)
+    return parsed_results
 
 def pickle_solve():
     eqns = []
@@ -157,61 +93,5 @@ def pickle_solve():
     pickle.dump(results, sys.stdout)
     sys.stdout.flush()
 
-def expect(proc, s):
-    log("expecting: %s" % s)
-    index = proc.expect(s)
-    log("ok. index: %i. before: %s" % (index, proc.before))
-    return index
-    
-def call_phc(infile, outfile):
-    settings = {
-        "outfile" : outfile
-    }
-    interactions = [
-        ("Give a string of characters : ", "%(outfile)s"),
-        ("Do you have already a witness set for the first equations ? ", "n"),
-        ("Do you want to destroy this file ? (y/n) ", "y"),
-        ("Type 0, 1, 2, 3, or 4 for your shuffle selection : ", "0"),
-        ("Do you want stepping stones of indetermediate witness sets ? ", "n"),
-        (re.compile(".*Type a number to change \(0 to exit\).*"), "0"),
-        ("Type a number between 0 and 8 to select output information : ", "0"),
-        (pexpect.EOF, None)
-    ]
-    phc_cmd = "/bin/bash -c 'phc -b %s %s'" % (infile, outfile) # | tee -a %s LOGFILE
-    log("PHC command: '%s'" % phc_cmd)
-    phc = pexpect.spawn(phc_cmd)    
-    while phc.isalive():
-        index = phc.expect([k for (k, v) in interactions])
-        message = interactions[index]
-        log("PHC interaction: %s" % str(message))
-        response = interactions[index][1]
-        if response == None:
-            log("PHC: EOF")
-            break
-        else:
-            phc.sendline(response % settings)
-    log("PHC: Done.")
-
-def solve(eqns):
-    id = str(timestamp())
-    infile = "/tmp/poly.%s.in" % id
-    outfile = "/tmp/poly.%s.out" % id
-    # write polynomials to file
-    f = open(infile, "w")
-    f.write(phc_in(eqns))
-    f.close()
-    # call phc
-    call_phc(infile, outfile)
-    # parse output
-    try:
-        f = open(outfile)
-    except:
-        return "Output file not found."
-    else:
-        results = f.read()
-        f.close()
-        return parse_results(eqns, results)    
-
 if __name__ == "__main__":
-    # pprint(solve(eqns))
     pickle_solve()

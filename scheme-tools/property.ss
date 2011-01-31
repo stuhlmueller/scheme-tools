@@ -10,6 +10,7 @@
          get-property)
 
  (import (rnrs)
+         (scheme-tools srfi-compat :1)
          (scheme-tools readable-scheme)
          (scheme-tools table))
 
@@ -22,8 +23,10 @@
    (let ([table (get-property-table obj)])
      (table-add! table property value)))
 
- (define (get-property obj property)
+ (define (get-property obj property . default)
    (let ([table (get-property-table obj)])
-     (table-lookup table property (lambda () (error (pair obj property) "property not found")))))
+     (table-lookup table property (if (null? default)
+                                      (lambda () (error (pair obj property) "property not found"))
+                                      (first default)))))
 
  )

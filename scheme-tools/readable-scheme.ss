@@ -23,6 +23,7 @@
          tagged-list?
          true
          true?
+         union
          rest)
 
  (import (scheme-tools srfi-compat :1)
@@ -114,5 +115,8 @@
           (pair proc
                 (pair (iota (length (first lsts)))
                       lsts))))
+
+ (define (union lsts equality)
+   (delete-duplicates (apply lset-union (cons equality lsts))))
 
  )

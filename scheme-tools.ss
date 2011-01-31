@@ -50,7 +50,8 @@
          time-nanosecond
          time-wait
          true
-         true?)
+         true?
+         union)
 
  (import (rnrs)
          (srfi :19)

@@ -1,9 +1,9 @@
 (library
 
-;; WARNING:
-;; This identifies all procedures for the purpose of hashing. We
-;; assume that any object given fully mirrors procedure information in
-;; an accessible way.
+ ;; WARNING:
+ ;; This identifies all procedures for the purpose of hashing. We
+ ;; assume that any object given fully mirrors procedure information in
+ ;; an accessible way.
 
  (scheme-tools mem)
 
@@ -12,33 +12,27 @@
  (import (rnrs)
          (only (srfi :1) first second)
          (scheme-tools readable-scheme)
-         (scheme-tools hash))
+         (scheme-tools hash)
+         (scheme-tools table)
+         (scheme-tools))
  
- ;; look up value for key in alist; if not found,
- ;; set (default-thunk) as value and return it
- (define (get/make-alist-entry alist alist-set! key default-thunk)
-   (let ([binding (assq key alist)])
-     (if binding
-         (rest binding)
-         (let* ([default-val (default-thunk)])
-           (alist-set! key default-val)
-           default-val))))
+ (define RECURSIVE-MEM-VALUE 'calling)
 
- (define memtables '())
+ (define memtables (make-table eq?))
 
  (define (get/make-memtable f)
-   (get/make-alist-entry memtables
-                         (lambda (k v) (set! memtables (pair (pair k v) memtables)))
-                         f
-                         (lambda () (make-finitize-hash-table))))
-
+   (table-lookup/set! memtables f make-finitize-hash-table))
+ 
  (define (mem f)
    (lambda args
      (let ([mt (get/make-memtable f)])
        (hash-table-ref mt
                        args
-                       (lambda () (let ([val (apply f args)])
-                               (hash-table-set! mt args val)
-                               val))))))
+                       (lambda () (begin
+                               (when RECURSIVE-MEM-VALUE
+                                     (hash-table-set! mt args RECURSIVE-MEM-VALUE))
+                               (let ([val (apply f args)])
+                                 (hash-table-set! mt args val)
+                                 val)))))))
 
  )

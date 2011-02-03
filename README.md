@@ -1,6 +1,6 @@
 # Scheme Tools
 
-Require one of the following:
+Required (one of the following):
 
 * [ikarus scheme](http://ikarus-scheme.org/)
 * [vicare scheme](http://marcomaggi.github.com/vicare.html)

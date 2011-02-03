@@ -4,7 +4,9 @@
 
  (scheme-tools implementation-specific)
 
- (export assert
+ (export add1
+         sub1
+         assert
          console-input-port
          environment
          eval
@@ -13,6 +15,7 @@
          fprintf
          gensym
          inexact->exact
+         interaction-environment
          make-parameter               
          modulo
          parameterize

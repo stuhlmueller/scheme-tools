@@ -4,7 +4,9 @@
 
  (scheme-tools implementation-specific general)
 
- (export assert
+ (export add1
+         sub1
+         assert
          console-input-port
          environment
          eval
@@ -13,6 +15,7 @@
          fprintf
          gensym
          inexact->exact
+         interaction-environment
          make-parameter               
          modulo
          parameterize
@@ -21,6 +24,8 @@
          void)
 
  (import (only (ikarus)
+               add1
+               sub1
                assert
                console-input-port
                environment
@@ -30,6 +35,7 @@
                fprintf
                gensym
                inexact->exact
+               interaction-environment
                make-parameter               
                modulo
                parameterize

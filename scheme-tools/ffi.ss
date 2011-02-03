@@ -21,8 +21,8 @@
                    vector-for-each
                    vector-fill!
                    vector->list
-                   list->vector)
-	   (only (ikarus) add1 sub1)
+                   list->vector)	   
+           (scheme-tools implementation-specific)
            (scheme-tools implementation-specific foreign))
 
          ;; =============================================================

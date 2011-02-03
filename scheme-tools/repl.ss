@@ -10,8 +10,8 @@
 
  (export repl)
 
- (import (rnrs)
-         (only (ikarus) eval interaction-environment)
+ (import (rnrs)         
+         (scheme-tools implementation-specific)
          (scheme-tools readable-scheme)
          (scheme-tools external))
 

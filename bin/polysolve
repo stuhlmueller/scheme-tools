@@ -23,8 +23,7 @@ TEMPLATE = """
 Sol = NSolve[{ 
 %(equations)s
            },
-           {%(variables)s},
-           Reals];
+           {%(variables)s}];
 
 Print[Sol];
 """

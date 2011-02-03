@@ -2,7 +2,7 @@
 from external import optfunc, process
 
 @optfunc.main
-@optfunc.arghelp('debug', 'run ikarus in debug mode')
+@optfunc.arghelp('debug', 'run vicare in debug mode')
 def main(fn, debug=False):
     """Usage: %prog <file> [options]"""
     debug = debug and "--debug" or ""
@@ -10,4 +10,4 @@ def main(fn, debug=False):
         "debug" : debug,
         "fn" : fn
     }
-    process.call("ikarus %(debug)s --r6rs-script %(fn)s" % settings)
+    process.call("vicare %(debug)s --r6rs-script %(fn)s" % settings)

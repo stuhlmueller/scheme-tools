@@ -29,22 +29,7 @@
          void)
 
  (import (rnrs)
-         (only (ikarus)
-               assert
-               console-input-port
-               environment
-               eval
-               exact->inexact
-               format
-               fprintf
-               gensym
-               inexact->exact
-               make-parameter               
-               modulo
-               parameterize
-               pretty-print
-               system
-               void)
+         (scheme-tools implementation-specific)
          (only (rnrs r5rs) delay force)
          (only (xitomatl keywords) define/kw lambda/kw)
          (only (xitomatl curry) define/curry)

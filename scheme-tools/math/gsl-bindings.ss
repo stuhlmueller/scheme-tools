@@ -48,8 +48,8 @@
 
  (import (scheme-tools srfi-compat :1)
          (srfi :19)
-         (ikarus foreign)
          (scheme-tools external)
+         (scheme-tools implementation-specific foreign)
          (scheme-tools math gsl-paths)
          (scheme-tools ffi)
          (rnrs))

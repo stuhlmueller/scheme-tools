@@ -23,7 +23,7 @@
                    vector->list
                    list->vector)
 	   (only (ikarus) add1 sub1)
-	   (ikarus foreign))
+           (scheme-tools implementation-specific foreign))
 
          ;; =============================================================
          ;;

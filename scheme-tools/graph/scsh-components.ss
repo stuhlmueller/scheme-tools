@@ -43,7 +43,7 @@
 
  (scheme-tools graph scsh-components)
 
- (export strongly-connected-components)
+ (export scsh-strongly-connected-components)
 
  (import (rnrs)
          (scheme-tools)
@@ -162,7 +162,7 @@
 
  ;; GRAPH is ((<symbol> . <symbol>*)*)
  
- (define (test-strong graph)
+ (define (scsh-strongly-connected-components graph)
    (let ((vertices (map (lambda (n)
                           (vector (car n) #f #f))
                         graph)))
@@ -184,6 +184,6 @@
 
  (define (test-strong-auto)
    (let ([graph '((a b) (b c) (c a) (d d))])
-     (pretty-print (test-strong graph))))
+     (pretty-print (scsh-strongly-connected-components graph))))
 
  )

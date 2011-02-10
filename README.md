@@ -20,4 +20,5 @@ Includes:
 
 * [xitomatl library](https://code.launchpad.net/~derick-eddington/scheme-libraries/xitomatl)
 * [srfi library](https://code.launchpad.net/~scheme-libraries-team/scheme-libraries/srfi)
-* MIT-Church math library and FFI (by David Wingate)
+* [mit-church](http://code.google.com/p/mit-church/) math and ffi library (by David Wingate)
+* [scsh](http://www.scsh.net/) module for strongly connected components

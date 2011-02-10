@@ -55,16 +55,16 @@
  (define (graph->alist graph)
    (hash-table->alist (graph:table graph)))
 
- (define (display-node node links node->id)
-   (pe "node: " (if node->id (node->id node) node) "\n")
+ (define (display-node node links node->info)
+   (pe "node: " (if node->info (node->info node) node) "\n")
    (if links
        (begin
          (for-each (lambda (link) (pe "  " link "\n"))
                    links)
          (pe "\n"))))
 
- (define (display-graph graph . node->id)
-   (for-each (lambda (entry) (display-node (first entry) (rest entry) (if (null? node->id) #f (first node->id))))
+ (define (display-graph graph . node->info)
+   (for-each (lambda (entry) (display-node (first entry) (rest entry) (if (null? node->info) #f (first node->info))))
              (graph->alist graph)))
 
  (define (graph-size graph)

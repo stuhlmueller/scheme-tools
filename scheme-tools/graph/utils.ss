@@ -6,9 +6,11 @@
 
  (export traverse
          graph:add/retrieve!
-         graph:add/link!)
+         graph:add/link!
+         graph:root-nodes)
 
  (import (rnrs)
+         (scheme-tools srfi-compat :1)
          (scheme-tools graph graph))
 
  (define (traverse start next combine stop? default)
@@ -29,5 +31,9 @@
           [connect! (if is-new graph:add-child! graph:link!)])
      (connect! graph last-node node label weight)
      is-new))
+
+ (define (graph:root-nodes graph)
+   (filter (lambda (node) (null? (graph:parents graph node)))
+           (map first (graph->alist graph))))
 
  )

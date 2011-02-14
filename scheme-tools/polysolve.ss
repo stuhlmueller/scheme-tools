@@ -12,9 +12,12 @@
 
  (scheme-tools polysolve)
 
- (export polysolve)
+ (export polysolve
+         polysolve/unique)
 
  (import (rnrs)
+         (scheme-tools srfi-compat :1)
+         (scheme-tools implementation-specific)
          (scheme-tools py-pickle))
 
  (define solver "polysolve")
@@ -31,5 +34,15 @@
                eqns)
      (py-pickle port 'solve)
      (map strings->symbols (py-unpickle port))))
+
+ (define (polysolve/unique eqns)
+   (let ([solutions (polysolve eqns)])
+     (when (not (= (length solutions) 1))
+           (display "polysolve/unique failed.\neqns:\n")
+           (map pretty-print eqns)
+           (display "solutions:\n")
+           (map pretty-print solutions)
+           (assert (= (length solutions) 1)))
+     (first solutions)))
 
  )

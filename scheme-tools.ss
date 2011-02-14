@@ -35,6 +35,8 @@
          pair
          parameterize
          pe
+         pp
+         ppe
          pretty-print
          repeat
          repl

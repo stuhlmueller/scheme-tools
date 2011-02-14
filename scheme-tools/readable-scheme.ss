@@ -14,6 +14,8 @@
          map-enumerate
          pair
          pe
+         pp
+         ppe
          repeat
          sum
          sym+num
@@ -27,6 +29,7 @@
          rest)
 
  (import (scheme-tools srfi-compat :1)
+         (scheme-tools external)
          (rnrs))
 
  (define true #t)
@@ -86,8 +89,25 @@
          (set! s (+ s 1))
          s))))
 
+ (define (pp? obj)
+   (tagged-list? obj 'pp))
+ 
+ (define (pp obj)
+   (list 'pp obj))
+
+ (define pp->obj second)
+
  (define (pe . args)
-   (for-each display args))
+   (if (null? args)
+       #f
+       (let ([value (first args)])
+         (if (pp? value)
+             (pretty-print (pp->obj value))
+             (display value))
+         (apply pe (rest args)))))
+
+ (define (ppe . args)
+   (apply pe (map pp args)))
 
  (define (call&return proc arg)
    (proc arg)

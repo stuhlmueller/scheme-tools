@@ -46,12 +46,19 @@ def eqn_text(eqn):
         else:
             return str(eqn)
 
+def parse_solution(solution_text):
+    try:
+        sol = eval(solution_text)
+    except:
+        sol = {}
+    return sol
+        
 def parse_solutions(txt):
     solutions = []
     for solution_txt in re.findall("\{[^\{]+?\}", txt):
         solution = solution_txt.replace("->", ":")
         solution = re.sub("([a-z][0-9]*[a-z]?[0-9]*)", "'\\1'", solution)
-        solution = [list(obj) for obj in eval(solution).items()]
+        solution = [list(obj) for obj in parse_solution(solution).items()]
         solutions.append(solution)
     return solutions
 

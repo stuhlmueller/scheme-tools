@@ -9,6 +9,9 @@
 ;; that are found, we can simply reduce the scheme-tools graph to a
 ;; scsh graph.
 
+;; Returns components in topological order (i.e. if there is a link
+;; from component A to component B, A comes first).
+
 (library
 
  (scheme-tools graph components)
@@ -16,8 +19,10 @@
  (export strongly-connected-components)
 
  (import (rnrs)
-         (scheme-tools)
+         (scheme-tools external)
+         (scheme-tools readable-scheme)
          (scheme-tools srfi-compat :1)
+         (scheme-tools object-id)
          (scheme-tools graph)
          (scheme-tools graph scsh-components))
 
@@ -25,11 +30,14 @@
    (map (lambda (node&links)
           (let ([from (first node&links)]
                 [links (rest node&links)])
-            (pair from (map link->target links))))
+            (pair (object->id from)
+                  (map ($ object->id link->target) links))))
         (graph->alist graph)))
 
  (define (strongly-connected-components graph)
-   (let ([scsh-graph (graph->scsh-graph graph)])
-     (scsh-strongly-connected-components scsh-graph)))
+   (let ([scsh-graph (graph->scsh-graph graph)]
+         [scsh-components (scsh-strongly-connected-components scsh-graph)])
+     (reverse (map (lambda (component) (map id->object component))
+                   scsh-components))))
  
  )

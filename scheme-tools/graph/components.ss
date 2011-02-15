@@ -35,8 +35,8 @@
         (graph->alist graph)))
 
  (define (strongly-connected-components graph)
-   (let ([scsh-graph (graph->scsh-graph graph)]
-         [scsh-components (scsh-strongly-connected-components scsh-graph)])
+   (let* ([scsh-graph (graph->scsh-graph graph)]
+          [scsh-components (scsh-strongly-connected-components scsh-graph)])
      (reverse (map (lambda (component) (map id->object component))
                    scsh-components))))
  

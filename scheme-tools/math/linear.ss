@@ -10,7 +10,7 @@
 
 (library
 
- (scheme-tools linsolve)
+ (scheme-tools math linear)
 
  (export linsolve)
 

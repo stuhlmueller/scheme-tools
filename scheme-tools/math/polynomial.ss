@@ -10,7 +10,7 @@
 
 (library
 
- (scheme-tools polysolve)
+ (scheme-tools math polynomial)
 
  (export polysolve
          polysolve/unique)

@@ -6,7 +6,6 @@
 
  (export make-graph
          graph->alist
-         display-graph
          graph-size
          graph:root
          graph:set-root!
@@ -18,8 +17,10 @@
          graph:link!
          graph:add-child!
          graph:node-exists?
+         graph:remove-node!
          graph:leaf?
          graph:root?
+         make-link
          link->label
          link->weight
          link->target)

@@ -26,6 +26,7 @@
          parameterize
          pretty-print
          system
+         time
          void)
 
  (import (rnrs)

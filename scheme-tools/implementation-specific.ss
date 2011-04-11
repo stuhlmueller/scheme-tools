@@ -21,6 +21,7 @@
          parameterize
          pretty-print
          system
+         time
          void)
 
  (import (scheme-tools implementation-specific general))

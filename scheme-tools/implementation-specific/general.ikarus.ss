@@ -21,6 +21,7 @@
          parameterize
          pretty-print
          system
+         time
          void)
  
  (import (only (ikarus)
@@ -41,6 +42,7 @@
                parameterize
                pretty-print
                system
+               time
                void))
 
  )

@@ -22,3 +22,4 @@ Includes:
 * [srfi library](https://code.launchpad.net/~scheme-libraries-team/scheme-libraries/srfi)
 * [mit-church](http://code.google.com/p/mit-church/) math and ffi library (by David Wingate)
 * [scsh](http://www.scsh.net/) module for strongly connected components
+* [merge-sort](http://en.literateprograms.org/Merge_sort_(Scheme))

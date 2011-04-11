@@ -31,6 +31,8 @@
          make-parameter
          map-enumerate
          match-lambda
+         median
+         merge-sort
          modulo
          pair
          parameterize
@@ -58,6 +60,7 @@
  (import (rnrs)
          (srfi :19)
          (scheme-tools repl)
+         (scheme-tools sort)
          (scheme-tools time)
          (scheme-tools readable-scheme)
          (scheme-tools external))

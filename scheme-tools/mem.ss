@@ -1,9 +1,11 @@
-(library
+#!r6rs
 
- ;; WARNING:
- ;; This identifies all procedures for the purpose of hashing. We
- ;; assume that any object given fully mirrors procedure information in
- ;; an accessible way.
+;; WARNING:
+;; This identifies all procedures for the purpose of hashing. We
+;; assume that any object given fully mirrors procedure information in
+;; an accessible way.
+
+(library
 
  (scheme-tools mem)
 

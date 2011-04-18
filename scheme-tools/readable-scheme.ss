@@ -17,7 +17,6 @@
          pp
          ppe
          repeat
-         sum
          sym+num
          sym+num->num
          sym-append
@@ -45,9 +44,6 @@
 
  (define (false? obj)
    (eq? obj #f))
-
- (define (sum vals)
-   (apply + vals))
 
  (define (all proc lst)
    (if (null? lst)

@@ -17,6 +17,7 @@
          gaussian-lnpdf
          tdist-pdf
          discrete-pdf
+         mean
          mmultinomial-lnpdf
          sample-discrete
          sample-binomial
@@ -27,10 +28,13 @@
          sample-gamma
          sample-dirichlet
          sample-mmultinomial
-         seed-rng randomize-rng)
+         seed-rng
+         randomize-rng
+         sum)
  
  (import (rnrs)
          (only (srfi :1) first)
+         (scheme-tools external)
          (scheme-tools math gsl-bindings))
  
  
@@ -73,5 +77,11 @@
 
  (define seed-rng gsl-rng-set)
  (define randomize-rng gsl-rng-randomize)
+
+ (define (sum lst)
+   (apply + lst))
+
+ (define (mean lst)
+   (/ (sum lst) (length lst)))
 
  )

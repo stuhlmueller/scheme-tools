@@ -17,6 +17,7 @@
          gaussian-lnpdf
          tdist-pdf
          discrete-pdf
+         mean
          mmultinomial-lnpdf
          sample-discrete
          sample-binomial
@@ -27,7 +28,9 @@
          sample-gamma
          sample-dirichlet
          sample-mmultinomial
-         seed-rng randomize-rng)
+         seed-rng
+         randomize-rng
+         sum)
 
  (import (scheme-tools math math))
 

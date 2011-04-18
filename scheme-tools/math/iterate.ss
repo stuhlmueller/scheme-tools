@@ -19,9 +19,11 @@
  (export iterate)
 
  (import (rnrs)
-         (scheme-tools)
+         (scheme-tools)         
          (scheme-tools external)
-         (scheme-tools srfi-compat :1))
+         (scheme-tools readable-scheme)
+         (scheme-tools srfi-compat :1)
+         (xitomatl keywords))
 
  (define eqn->var second)
  
@@ -44,16 +46,22 @@
           (map (lambda (old new) (abs (- old new)))
                old-vals
                new-vals)))
+
+ (define (stop? n max-iters vals new-vals)
+   (if (> n max-iters)
+       (begin
+         (pe "Iterator exceeded " max-iters " iterations! Precision: "
+             (delta vals new-vals) "\n")
+         true)
+       false))
  
- (define (iterate eqns d)
+ (define/kw (iterate eqns d [max-iters :default 10000000])
    (let ([iterator (eqns->iterator eqns)])
      (let loop ([n 0]
                 [vals (map (lambda (eqn) 0.0) eqns)])
-       (when (> n 1000000)
-             (pretty-print eqns)
-             (error d "Iterator exceeded 1000000 iterations."))
        (let ([new-vals (iterator vals)])
-         (if (<= (delta vals new-vals) d)
+         (if (or (<= (delta vals new-vals) d)
+                 (stop? n max-iters vals new-vals))
              (map (lambda (eqn val)
                     (pair (eqn->var eqn) val))
                   eqns

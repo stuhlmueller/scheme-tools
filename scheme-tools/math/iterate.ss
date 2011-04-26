@@ -50,7 +50,7 @@
  (define (stop? n max-iters vals new-vals)
    (if (> n max-iters)
        (begin
-         (pe "Iterator exceeded " max-iters " iterations! Precision: "
+         (pe "Iterator exceeded " max-iters " iterations! Delta: "
              (delta vals new-vals) "\n")
          true)
        false))

@@ -1,9 +1,10 @@
 #!r6rs
 
 ;; WARNING:
-;; This identifies all procedures for the purpose of hashing. We
-;; assume that any object given fully mirrors procedure information in
-;; an accessible way.
+;; This identifies all procedures that occur in the arguments of a
+;; memoized function for the purpose of hashing. We assume that any
+;; object given fully mirrors procedure information in an accessible
+;; way.
 
 (library
 

@@ -9,6 +9,7 @@
          ->string:n
          all
          assert
+         bin
          call&return
          compose
          console-input-port
@@ -44,6 +45,7 @@
          repeat
          repl
          rest
+         string-sort
          sum
          sym+num
          sym+num->num
@@ -60,6 +62,7 @@
 
  (import (rnrs)
          (srfi :19)
+         (scheme-tools bin)
          (scheme-tools math)
          (scheme-tools repl)
          (scheme-tools sort)

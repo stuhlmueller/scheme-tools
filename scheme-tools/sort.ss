@@ -8,9 +8,11 @@
  (scheme-tools sort)
 
  (export median
-         merge-sort)
+         merge-sort
+         string-sort)
 
  (import (rnrs)
+         (scheme-tools readable-scheme)
          (scheme-tools implementation-specific))
  
  (define split-h
@@ -53,5 +55,9 @@
                        (list-ref nlst (- (/ len 2) 1))) 2)
                  (list-ref nlst (inexact->exact (floor (/ len 2)))))))
      (exact->inexact m)))
+
+ (define (string-sort lst)
+   (merge-sort (lambda (a b) (string<? (->string a) (->string b)))
+               lst))
 
  )

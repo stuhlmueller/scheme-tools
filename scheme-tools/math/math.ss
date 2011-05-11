@@ -19,6 +19,7 @@
          discrete-pdf
          mean
          mmultinomial-lnpdf
+         normalize
          sample-discrete
          sample-binomial
          sample-poisson
@@ -83,5 +84,10 @@
 
  (define (mean lst)
    (/ (sum lst) (length lst)))
+
+ (define (normalize lst)
+   (let ([total (sum lst)])
+     (map (lambda (element) (/ element total))
+          lst)))
 
  )

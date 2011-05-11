@@ -19,6 +19,7 @@
          discrete-pdf
          mean
          mmultinomial-lnpdf
+         normalize
          sample-discrete
          sample-binomial
          sample-poisson

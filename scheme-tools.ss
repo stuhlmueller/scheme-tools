@@ -36,6 +36,7 @@
          median
          merge-sort
          modulo
+         normalize
          pair
          parameterize
          pe

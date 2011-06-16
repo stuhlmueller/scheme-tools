@@ -6,6 +6,7 @@
 
  (export $
          assert
+         command-line-arguments
          compose
          console-input-port
          define/curry

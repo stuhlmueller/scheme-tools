@@ -7,6 +7,7 @@
  (export add1
          sub1
          assert
+         command-line-arguments
          console-input-port
          environment
          eval
@@ -28,6 +29,7 @@
                add1
                sub1
                assert
+               command-line-arguments
                console-input-port
                environment
                eval

@@ -38,24 +38,25 @@
  (import (rnrs)
          (scheme-tools readable-scheme)
          (scheme-tools external)
+         (scheme-tools srfi-compat :1)
          (scheme-tools srfi-compat :69))
 
- (define/kw (finitize obj)
-   (define seen '())
-   (define sym (symbol-maker 's))
+ (define (finitize obj)
+   (define seen (make-eq-hash-table))
+   (define sym (get-counter))
    (define (fin obj)
-     (let ([s (assq obj seen)])
-       (if s
-           (cdr s)
-           (cond [(procedure? obj) 'proc]
-                 [(pair? obj)
-                  (begin (set! seen (cons (cons obj (sym)) seen))
-                         (cons (fin (car obj))
-                               (fin (cdr obj))))]
-                 [(vector? obj)
-                  (begin (set! seen (cons (cons obj (sym)) seen))
-                         (map fin (vector->list obj)))]
-                 [else obj]))))
+     (hash-table-ref seen
+                     obj
+                     (lambda ()      
+                       (cond [(procedure? obj) 'proc]
+                             [(pair? obj)
+                              (begin (hash-table-set! seen obj (sym))
+                                     (cons (fin (car obj))
+                                           (fin (cdr obj))))]
+                             [(vector? obj)
+                              (begin (hash-table-set! seen obj (sym))
+                                     (map fin (vector->list obj)))]
+                             [else obj]))))
    (fin obj))
 
  (define *default-bound* (- (expt 2 29) 3))
@@ -91,12 +92,11 @@
                                *default-bound*)))))
 
  (define (finitize-hash obj . bound)
-    (equality-hash (finitize obj)
-                   (if (null? bound) *default-bound* bound)))
+   (equality-hash (finitize obj)
+                  (if (null? bound) *default-bound* bound)))
 
  (define (finitize-equal? obj1 obj2)
-   (equal? (finitize obj1)
-           (finitize obj2)))
+   (equal? obj1 obj2))
 
  (define (default-make-hash-table . args)
    (when (not (= (length args) 2))

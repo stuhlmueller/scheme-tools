@@ -10,7 +10,8 @@
 
  (scheme-tools mem)
 
- (export mem)
+ (export mem
+         recursive-mem)
 
  (import (rnrs)
          (only (srfi :1) first second)
@@ -19,22 +20,24 @@
          (scheme-tools table)
          (scheme-tools))
  
- (define RECURSIVE-MEM-VALUE 'calling)
+  (define (mem f)
+   (let ([memtable (make-finitize-hash-table)])
+     (lambda args
+       (hash-table-ref
+        memtable
+        args
+        (lambda () (let ([val (apply f args)])
+                (hash-table-set! memtable args val)
+                val))))))
 
- (define memtables (make-table eq?))
-
- (define (get/make-memtable f)
-   (table-lookup/set! memtables f make-finitize-hash-table))
- 
- (define (mem f)
-   (lambda args
-     (let ([memtable (get/make-memtable f)])
+ (define (recursive-mem f make-recursion-value)
+   (let ([memtable (make-finitize-hash-table)])   
+     (lambda args
        (hash-table-ref
         memtable
         args
         (lambda () (begin
-                (when RECURSIVE-MEM-VALUE
-                      (hash-table-set! memtable args RECURSIVE-MEM-VALUE))
+                (hash-table-set! memtable args (make-recursion-value))
                 (let ([val (apply f args)])
                   (hash-table-set! memtable args val)
                   val)))))))

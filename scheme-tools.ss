@@ -11,6 +11,7 @@
          assert
          bin
          call&return
+         command-line-arguments
          compose
          console-input-port
          current-time
@@ -59,7 +60,8 @@
          time-wait
          true
          true?
-         union)
+         union
+         void)
 
  (import (rnrs)
          (srfi :19)

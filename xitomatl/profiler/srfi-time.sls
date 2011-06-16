@@ -90,6 +90,7 @@
                                               (if mi (min ti mi) ti)
                                               (max ti ma)))
                                     0 0 #F 0)))
+                  (fpf "   total time: ~s sec\n" (inexact total))
                   (fpf " average time: ~s sec\n" (inexact (/ total count)))
                   (fpf " minimum time: ~s sec\n" (inexact minimum))
                   (fpf " maximum time: ~s sec\n" (inexact maximum))))

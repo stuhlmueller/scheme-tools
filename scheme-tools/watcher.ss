@@ -16,7 +16,7 @@
  (define (make-watcher . hash-table-maker)
    (let ([watch-table (if (null? hash-table-maker)
                           (make-finitize-hash-table)
-                          (hash-table-maker))])
+                          ((car hash-table-maker)))])
      (lambda (obj)
        (hash-table-ref watch-table
                        obj

@@ -23,3 +23,7 @@ Includes:
 * [mit-church](http://code.google.com/p/mit-church/) math and ffi library (by David Wingate)
 * [scsh](http://www.scsh.net/) module for strongly connected components
 * [merge-sort](http://en.literateprograms.org/Category:Merge_sort)
+
+Changes:
+
+* xitomatl/profiler/srfi-time.sls: [show total time](https://github.com/stuhlmueller/scheme-tools/commit/da9c8a79554ccf4d29bd176de6cc17c2331ed714)

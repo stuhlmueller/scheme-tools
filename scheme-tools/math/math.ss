@@ -91,20 +91,11 @@
      (map (lambda (element) (/ element total))
           lst)))
 
- (define (logsumexp . vals)
-   (let* ([n (list-ref vals 0)])
-     (if (null? (cdr vals))
-         n
-         (let ([maxAbs n]
-               [minN n]
-               [maxN n])
-           (for-each (lambda (n)
-                       (begin
-                         (when (> n maxN) (set! maxN n))
-                         (when (> (abs n) maxAbs) (set! maxAbs (abs n)))
-                         (when (< n minN) (set! minN n))))
-                     (cdr vals))
-           (let ([c (if (> maxAbs maxN) minN maxN)])
-             (+ c (log (sum (map (lambda (i) (exp (- i c))) vals)))))))))
+ (define (logsumexp . log-vals)
+   (let ([max-log-val (apply max log-vals)])
+     (if (equal? max-log-val -inf.0)
+         -inf.0
+         (+ (log (exact->inexact (sum (map (lambda (val) (exp (- val max-log-val))) log-vals))))
+            max-log-val))))
  
  )

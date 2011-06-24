@@ -30,6 +30,7 @@
          get-counter
          inexact->exact
          lambda/kw
+         logsumexp
          make-parameter
          map-enumerate
          match-lambda

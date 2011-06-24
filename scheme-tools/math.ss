@@ -31,7 +31,8 @@
          sample-mmultinomial
          seed-rng
          randomize-rng
-         sum)
+         sum
+         logsumexp)
 
  (import (scheme-tools math math))
 

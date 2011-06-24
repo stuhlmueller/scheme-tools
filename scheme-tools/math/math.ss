@@ -31,7 +31,8 @@
          sample-mmultinomial
          seed-rng
          randomize-rng
-         sum)
+         sum
+         logsumexp)
  
  (import (rnrs)
          (only (srfi :1) first)
@@ -90,4 +91,20 @@
      (map (lambda (element) (/ element total))
           lst)))
 
+ (define (logsumexp vals)
+   (let* ([n (list-ref vals 0)])
+     (if (null? (cdr vals))
+         n
+         (let ([maxAbs n]
+               [minN n]
+               [maxN n])
+           (for-each (lambda (n)
+                       (begin
+                         (when (> n maxN) (set! maxN n))
+                         (when (> (abs n) maxAbs) (set! maxAbs (abs n)))
+                         (when (< n minN) (set! minN n))))
+                     (cdr vals))
+           (let ([c (if (> maxAbs maxN) minN maxN)])
+             (+ c (log (sum (map (lambda (i) (exp (- i c))) vals)))))))))
+ 
  )

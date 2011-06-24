@@ -91,7 +91,7 @@
      (map (lambda (element) (/ element total))
           lst)))
 
- (define (logsumexp vals)
+ (define (logsumexp . vals)
    (let* ([n (list-ref vals 0)])
      (if (null? (cdr vals))
          n

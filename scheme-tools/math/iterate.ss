@@ -17,7 +17,7 @@
  (scheme-tools math iterate)
 
  (export iterate
-         iterate/plain)
+         iterate/eqns)
 
  (import (rnrs)
          (scheme-tools)         
@@ -26,30 +26,19 @@
          (scheme-tools srfi-compat :1)
          (xitomatl keywords))
 
- (define eqn->var second)
+
+ ;; Function iterator
+
+ ;; Return 0.0 when two identical symbols (like -inf.0, +inf.0,
+ ;; -nan.0, +nan.0) are given.
+ (define (extended- a b)
+   (if (eq? a b)
+       0.0
+       (- a b)))
  
- (define (eqn->body eqn)
-   (first (drop eqn 2)))
-
- (define (eqns->func eqns)
-   (let* ([var-names (map second eqns)]
-          [var-bindings (map-enumerate (lambda (i var-name)
-                                         `[,var-name (list-ref vars ,i)])
-                                       var-names)]
-          [iterator-expr `(lambda (vars)
-                            (let ,var-bindings
-                              (list ,@(map eqn->body eqns))))])
-     (eval iterator-expr
-           (environment '(rnrs)))))
-
- (define (named-vals eqns vals)
-   (map (lambda (eqn val) (pair (eqn->var eqn) val))
-        eqns
-        vals)) 
-
  (define (delta old-vals new-vals)
    (apply max
-          (map (lambda (old new) (abs (- old new)))
+          (map (lambda (old new) (abs (extended- old new)))
                old-vals
                new-vals)))
 
@@ -61,21 +50,48 @@
          true)
        false))
  
- (define/kw (iterate start update d [max-iters :default 10000000])
+ (define/kw (iterate start update target-delta [max-iters :default 10000000])
    (let loop ([n 0]
               [vals start])
      (let ([new-vals (update vals)])
-       (if (or (<= (delta vals new-vals) d)
+       (if (or (<= (delta vals new-vals) target-delta)
                (stop? n max-iters vals new-vals))
            new-vals
            (loop (+ n 1)
                  new-vals)))))
+
  
- (define/kw (iterate/plain eqns d [max-iters :default 10000000])
+ ;; Equation iterator (based on function iterator)
+ 
+ (define eqn->var second)
+ 
+ (define (eqn->body eqn)
+   (first (drop eqn 2))) 
+
+ (define (named-vals eqns vals)
+   (map (lambda (eqn val) (pair (eqn->var eqn) val))
+        eqns
+        vals)) 
+
+ (define/kw (eqns->func eqns env)
+   (let* ([var-names (map second eqns)]
+          [var-bindings (map-enumerate (lambda (i var-name)
+                                         `[,var-name (list-ref vars ,i)])
+                                       var-names)]
+          [iterator-expr `(lambda (vars)
+                            (let ,var-bindings
+                              (list ,@(map eqn->body eqns))))])
+     (eval iterator-expr env))) 
+ 
+ (define/kw (iterate/eqns eqns
+                          target-delta
+                          [max-iters :default 10000]
+                          [start-value :default -inf.0]
+                          [env :default (environment '(rnrs))])
    (named-vals eqns
-               (iterate (make-list (length eqns) 0.0)
-                        (eqns->func eqns)
-                        d
+               (iterate (make-list (length eqns) start-value)
+                        (eqns->func eqns env)
+                        target-delta
                         'max-iters max-iters)))
  
  )

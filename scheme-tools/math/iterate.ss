@@ -9,7 +9,7 @@
 ;; 
 ;; (define eqns '((= x (+ (* .5 x) (* .2 y) .3))
 ;;                (= y (+ (* .12 x) (* .3 y) .7))))
-;; (iterate/plain eqns 0.0)
+;; (iterate/eqns eqns 0.0 'start-value 0.0)
 ;; -> ((x . 1.0736196319018403) (y . 1.184049079754601))
 
 (library

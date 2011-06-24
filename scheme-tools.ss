@@ -55,6 +55,7 @@
          symbol-maker
          system
          tagged-list?
+         time
          time-diff
          time-nanosecond
          time-wait

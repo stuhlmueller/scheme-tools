@@ -11,6 +11,7 @@
 ;;                (= y (+ (* .12 x) (* .3 y) .7))))
 ;; (iterate/eqns eqns 0.0 'start-value 0.0)
 ;; -> ((x . 1.0736196319018403) (y . 1.184049079754601))
+;; -> 0.0
 
 (library
 
@@ -41,25 +42,17 @@
           (map (lambda (old new) (abs (extended- old new)))
                old-vals
                new-vals)))
-
- (define (stop? n max-iters vals new-vals)
-   (if (> n max-iters)
-       (begin
-         (pe "Iterator exceeded " max-iters " iterations! Delta: "
-             (delta vals new-vals) "\n")
-         true)
-       false))
  
  (define/kw (iterate start update target-delta [max-iters :default 10000000])
    (let loop ([n 0]
               [vals start])
-     (let ([new-vals (update vals)])
-       (if (or (<= (delta vals new-vals) target-delta)
-               (stop? n max-iters vals new-vals))
-           new-vals
-           (loop (+ n 1)
-                 new-vals)))))
-
+     (let* ([new-vals (update vals)]
+            [cur-delta (delta vals new-vals)])
+       (if (or (<= cur-delta target-delta)
+               (> n max-iters))
+           (values new-vals cur-delta)
+           (loop (+ n 1) new-vals)))))
+ 
  
  ;; Equation iterator (based on function iterator)
  
@@ -88,10 +81,11 @@
                           [max-iters :default 10000]
                           [start-value :default -inf.0]
                           [env :default (environment '(rnrs))])
-   (named-vals eqns
-               (iterate (make-list (length eqns) start-value)
-                        (eqns->func eqns env)
-                        target-delta
-                        'max-iters max-iters)))
+   (let-values ([(vals final-delta) (iterate (make-list (length eqns) start-value)
+                                             (eqns->func eqns env)
+                                             target-delta
+                                             'max-iters max-iters)])
+     (values (named-vals eqns vals)
+             final-delta)))
  
  )

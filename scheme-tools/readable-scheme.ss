@@ -12,7 +12,6 @@
          false?
          get-counter
          identity
-         map-enumerate
          pair
          pe
          pp
@@ -25,7 +24,6 @@
          tagged-list?
          true
          true?
-         union
          rest)
 
  (import (scheme-tools srfi-compat :1)
@@ -126,15 +124,6 @@
    (if (= n 0)
        '()
        (cons (proc) (repeat (- n 1) proc))))
-
- (define (map-enumerate proc . lsts)
-   (apply map
-          (pair proc
-                (pair (iota (length (first lsts)))
-                      lsts))))
-
- (define (union lsts equality)
-   (delete-duplicates (apply lset-union (cons equality lsts))))
 
  (define (identity x)
    x)

@@ -1,11 +1,9 @@
 #!r6rs
 
-;; hasher that can deal with recursive references
+;; equal?-based hash-table that can deal with recursive references
 
-;; WARNING:
-;; The finitize-hash-table identifies all procedures for the purpose
-;; of hashing. We assume that any object given fully mirrors procedure
-;; information in an accessible way.
+;; finitize-hash-table identifies all procedures for the purpose of
+;; hashing (but not for equality).
 
 (library
 

@@ -11,6 +11,7 @@
          false
          false?
          get-counter
+         identity
          map-enumerate
          pair
          pe
@@ -134,5 +135,8 @@
 
  (define (union lsts equality)
    (delete-duplicates (apply lset-union (cons equality lsts))))
+
+ (define (identity x)
+   x)
 
  )

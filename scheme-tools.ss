@@ -28,6 +28,7 @@
          fprintf
          gensym
          get-counter
+         identity
          inexact->exact
          lambda/kw
          logsumexp

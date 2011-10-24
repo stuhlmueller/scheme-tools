@@ -4,7 +4,8 @@
 
  (scheme-tools readable-scheme)
 
- (export ->string
+ (export display-to-string
+	 ->string
          ->string:n
          all
          call&return
@@ -119,6 +120,11 @@
          string
          (string-append (substring string 0 n)
                         "..."))))
+
+ (define (display-to-string val)
+   (let-values ([(string-port extractor) (open-string-output-port)])
+     (display val string-port)    
+     (extractor)))
 
  (define (repeat n proc)
    (if (= n 0)

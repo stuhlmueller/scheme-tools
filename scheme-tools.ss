@@ -5,7 +5,8 @@
  (scheme-tools)
 
  (export $
-         ->string
+         display-to-string
+	 ->string
          ->string:n
          all
          all-combinations

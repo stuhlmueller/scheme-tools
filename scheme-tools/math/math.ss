@@ -32,7 +32,9 @@
          seed-rng
          randomize-rng
          sum
-         logsumexp)
+         logsumexp
+         uniform-draw
+         flip)
  
  (import (rnrs)
          (only (srfi :1) first)
@@ -97,5 +99,13 @@
          -inf.0
          (+ (log (exact->inexact (sum (map (lambda (val) (exp (- val max-log-val))) log-vals))))
             max-log-val))))
+
+ (define (uniform-draw lst)
+   (list-ref lst (random-integer (length lst))))
+
+ (define (flip . w)
+   (if (null? w) 
+       (< (random-real) 0.5) 
+       (< (random-real) (car w)) ))
  
  )

@@ -32,7 +32,9 @@
          seed-rng
          randomize-rng
          sum
-         logsumexp)
+         logsumexp
+         uniform-draw
+         flip)
 
  (import (scheme-tools math math))
 

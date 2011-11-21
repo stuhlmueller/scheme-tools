@@ -38,8 +38,8 @@
 ;; pickle.dump(x,sys.stdout) function. Since we are using stdin and
 ;; stdout for process communication a python script MUST NOT write
 ;; anything to stdout!  Note also that not the whole pickle protocol
-;; is implemented, but lists, strings, floats and ints are fine (see
-;; py-pickle and py-unpickle below).
+;; is implemented, but lists, strings, floats, booleans, and ints are
+;; fine (see py-pickle and py-unpickle below).
 
 (define (py-pickle-function py-call)
   (lambda (x . rest)
@@ -212,13 +212,13 @@
 ;; can consists of lists of lists with mixed types to a
 ;; python-pickle-style string that can then be send around or saved or
 ;; whatever. Here we only implement a small part of python's protocol
-;; 0, i.e. we only have list, string, int, and float. Protocol 0 is
-;; just ascii. Details of how protocol 0 works can be found in
-;; 'pythontools.py'. The function pythontools.dis() is useful because
-;; it shows what the pickle machine does to unpickle a string. From
-;; this one can reverse-engineer what is going on. Basically it is
-;; just a stack machine (with external memory that we did not
-;; implement).
+;; 0, i.e. we only have list, string, int, booleans, and
+;; float. Protocol 0 is just ascii. Details of how protocol 0 works
+;; can be found in 'pythontools.py'. The function pythontools.dis() is
+;; useful because it shows what the pickle machine does to unpickle a
+;; string. From this one can reverse-engineer what is going
+;; on. Basically it is just a stack machine (with external memory that
+;; we did not implement).
 ;;
 ;; 'S' push the string that follows and ends with \n onto the stack
 ;; 'I' push an integer
@@ -278,6 +278,7 @@
    ((string? x)  (format "S~s\n" x))
    ((symbol? x)  (format "S~s\n" (symbol->string x)))
    ((integer? x) (format "I~a\n" (inexact->exact x)))
+   ((boolean? x) (format "I0~a\n" (if x 1 0)))
    ((real? x)    (format "F~a\n" x))
    ((null? x)    "(l")
    ((list? x)    (format "(l~aa~a"
@@ -416,7 +417,9 @@
 (define (py-unpickle-nmbr port stack memory)
   (let*
       ((s (get-line port))                            ; this is a string
-       (n (string->number s)))                        ; and this is a number
+       (n (cond [(equal? s "00") #f]
+                [(equal? s "01") #t]
+                [else (string->number s)])))          ; and this is a number
     (py-unpickle-stack port
                        (cons n stack)
                        memory)))

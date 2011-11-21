@@ -47,6 +47,7 @@
          pp
          ppe
          pretty-print
+         read-file
          repeat
          repl
          rest
@@ -70,6 +71,7 @@
  (import (rnrs)
          (srfi :19)
          (scheme-tools bin)
+         (scheme-tools file)
          (scheme-tools lists)
          (scheme-tools math)         
          (scheme-tools repl)

@@ -5,6 +5,7 @@
  (scheme-tools lists)
 
  (export all-combinations
+         contains?
          map-enumerate
          union)
 
@@ -24,6 +25,9 @@
                              (map (lambda (s) (cons fst s))
                                   acc))
                            (car lsts)))))))
+
+ (define (contains? lst elt equality)
+   (not (eq? (find (lambda (e) (equality elt e)) lst) #f)))
 
  (define (map-enumerate proc . lsts)
    (apply map

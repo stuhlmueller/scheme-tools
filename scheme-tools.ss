@@ -15,6 +15,7 @@
          command-line-arguments
          compose
          console-input-port
+         contains?
          current-time
          define/curry
          define/kw

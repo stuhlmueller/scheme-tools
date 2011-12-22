@@ -40,10 +40,10 @@
  (define (delta old-vals new-vals)
    (apply max
           (map (lambda (old new) (abs (extended- old new)))
-               old-vals
-               new-vals)))
+               (vector->list old-vals)
+               (vector->list new-vals))))
  
- (define/kw (iterate start update target-delta [max-iters :default 10000000])
+ (define/kw (iterate start update target-delta [max-iters :default 10000])
    (let loop ([n 0]
               [vals start])
      (let* ([new-vals (update vals)]
@@ -64,28 +64,29 @@
  (define (named-vals eqns vals)
    (map (lambda (eqn val) (pair (eqn->var eqn) val))
         eqns
-        vals)) 
+        vals))
 
  (define/kw (eqns->func eqns env)
    (let* ([var-names (map second eqns)]
           [var-bindings (map-enumerate (lambda (i var-name)
-                                         `[,var-name (list-ref vars ,i)])
+                                         `[,var-name (vector-ref vars ,i)])
                                        var-names)]
           [iterator-expr `(lambda (vars)
                             (let ,var-bindings
-                              (list ,@(map eqn->body eqns))))])
-     (eval iterator-expr env))) 
+                              (vector ,@(map eqn->body eqns))))]
+          [func (eval iterator-expr env)])
+     func))
  
  (define/kw (iterate/eqns eqns
                           target-delta
                           [max-iters :default 10000]
                           [start-value :default -inf.0]
                           [env :default (environment '(rnrs))])
-   (let-values ([(vals final-delta) (iterate (make-list (length eqns) start-value)
+   (let-values ([(vals final-delta) (iterate (make-vector (length eqns) start-value)
                                              (eqns->func eqns env)
                                              target-delta
                                              'max-iters max-iters)])
-     (values (named-vals eqns vals)
+     (values (named-vals eqns (vector->list vals))
              final-delta)))
  
  )

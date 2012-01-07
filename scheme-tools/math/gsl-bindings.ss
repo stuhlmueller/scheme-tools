@@ -35,16 +35,56 @@
 
  (scheme-tools math gsl-bindings)
  
- (export gsl-lnfact gsl-lngamma gsl-polygamma
-         gsl-rng-set gsl-rng-randomize
-         gsl-rng-uniform-int gsl-rng-uniform-pos
-         gsl-bernoulli gsl-bernoulli-pdf gsl-beta gsl-beta-pdf
-         gsl-binomial gsl-binomial-pdf gsl-exponential gsl-exponential-pdf
-         gsl-gamma gsl-gamma-pdf gsl-poisson gsl-poisson-pdf gsl-gaussian gsl-gaussian-pdf
-         gsl-tdist gsl-tdist-pdf
-         gsl-multinomial gsl-multinomial-pdf gsl-multinomial-lnpdf
-         gsl-dirichlet gsl-dirichlet-pdf gsl-dirichlet-lnpdf
-         gsl-discrete gsl-discrete-pdf)
+ (export gsl-lnfact
+         gsl-lngamma
+         gsl-polygamma
+         gsl-rng-set
+         gsl-rng-randomize
+         gsl-rng-uniform-int
+         gsl-rng-uniform-pos
+         gsl-bernoulli
+         gsl-bernoulli-pdf
+         gsl-beta
+         gsl-beta-pdf
+         gsl-binomial
+         gsl-binomial-pdf
+         gsl-exponential
+         gsl-exponential-pdf
+         gsl-gamma
+         gsl-gamma-pdf
+         gsl-poisson
+         gsl-poisson-pdf
+         gsl-gaussian
+         gsl-gaussian-pdf
+         gsl-tdist
+         gsl-tdist-pdf
+         gsl-multinomial
+         gsl-multinomial-pdf
+         gsl-multinomial-lnpdf
+         gsl-dirichlet
+         gsl-dirichlet-pdf
+         gsl-dirichlet-lnpdf
+         gsl-discrete
+         gsl-discrete-pdf         
+         gsl-rngt-taus
+         gsl-rngt-gfsr4
+         gsl-rngt-mt19937
+         gsl-rngt-ranlxs0
+         gsl-rngt-ranlxs1
+         gsl-rngt-mrg
+         gsl-rngt-ranlux
+         gsl-rngt-ranlxd1
+         gsl-rngt-ranlxs2
+         gsl-rngt-cmrg
+         gsl-rngt-ranlux389
+         gsl-rngt-ranlxd2
+         gsl-rngt-ran3
+         gsl-rngt-ran0
+         gsl-rngt-ran1
+         gsl-rngt-ran2
+         gsl-rng-alloc
+         gsl-rng-free
+         gsl-default-rng)
 
  (import (scheme-tools srfi-compat :1)
          (srfi :19)

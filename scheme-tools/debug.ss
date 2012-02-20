@@ -47,6 +47,9 @@
      [(_ (name a1 a2 ... . an) . bodies)
       (define (name a1 a2 ... . an)
         (with-debug-info 'name '(a1 a2 ... an) (list a1 a2 ... an) (lambda () (begin . bodies))))]
+     [(_ (name) . bodies)
+      (define (name)
+        (with-debug-info 'name '() '() (lambda () (begin . bodies))))]
      [(_ (name . an) . bodies)
       (define (name . an)
         (with-debug-info 'name '(an) (list an) (lambda () (begin . bodies))))]))

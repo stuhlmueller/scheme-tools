@@ -78,7 +78,7 @@
                                  bound))
             ((null? obj) 0)
             ((not obj) 0)
-            ((procedure? obj) (error "equality-hash: procedures cannot be hashed" obj))
+            ((procedure? obj) (error obj "equality-hash: procedures cannot be hashed"))
             (else 1)))))
 
  (define (vector-hash v bound)

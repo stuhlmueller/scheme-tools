@@ -42,6 +42,7 @@
          merge-sort
          modulo
          normalize
+         opt
          pair
          parameterize
          pe
@@ -74,7 +75,7 @@
          (scheme-tools bin)
          (scheme-tools file)
          (scheme-tools lists)
-         (scheme-tools math)         
+         (scheme-tools math)
          (scheme-tools repl)
          (scheme-tools sort)
          (scheme-tools time)

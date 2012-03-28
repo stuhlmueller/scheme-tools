@@ -12,6 +12,7 @@
          false?
          get-counter
          identity
+         opt
          pair
          pe
          pp
@@ -86,7 +87,7 @@
 
  (define (pp? obj)
    (tagged-list? obj 'pp))
- 
+
  (define (pp obj)
    (list 'pp obj))
 
@@ -112,7 +113,7 @@
    (let-values ([(string-port extractor) (open-string-output-port)])
      (write val string-port)
      (extractor)))
-         
+
  (define (->string:n val n)
    (let ([string (->string val)])
      (if (<= (string-length string) n)
@@ -127,5 +128,10 @@
 
  (define (identity x)
    x)
+
+ (define (opt arg default)
+   (if (null? arg)
+       default
+       (car arg)))
 
  )

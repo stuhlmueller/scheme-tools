@@ -33,21 +33,23 @@
          finitize
          finitize-equal?
          finitize-hash)
- 
+
  (import (rnrs)
          (scheme-tools readable-scheme)
          (scheme-tools external)
          (scheme-tools srfi-compat :1)
          (scheme-tools srfi-compat :69))
 
- (define (finitize obj)
+ (define/kw (finitize obj
+                      [handler :default (lambda (x) x)]
+                      [keep-procs :default #f])
    (define seen (make-eq-hash-table))
    (define sym (get-counter))
    (define (fin obj)
      (hash-table-ref seen
                      obj
-                     (lambda ()      
-                       (cond [(procedure? obj) 'proc]
+                     (lambda ()
+                       (cond [(procedure? obj) (if keep-procs obj 'proc)]
                              [(pair? obj)
                               (begin (hash-table-set! seen obj (sym))
                                      (cons (fin (car obj))
@@ -55,7 +57,7 @@
                              [(vector? obj)
                               (begin (hash-table-set! seen obj (sym))
                                      (map fin (vector->list obj)))]
-                             [else obj]))))
+                             [else (handler obj)]))))
    (fin obj))
 
  (define *default-bound* (- (expt 2 29) 3))
@@ -90,8 +92,8 @@
        (set! hashvalue (modulo (+ (* 257 hashvalue) (equality-hash (vector-ref v index)))
                                *default-bound*)))))
 
- (define (finitize-hash obj . bound)
-   (equality-hash (finitize obj)
+ (define/kw (finitize-hash obj [handler :default (lambda (x) x)] [keep-procs :default #f] . bound)
+   (equality-hash (finitize obj 'handler handler 'keep-procs keep-procs)
                   (if (null? bound) *default-bound* bound)))
 
  (define (finitize-equal? obj1 obj2)
@@ -113,7 +115,7 @@
 
  (define (test)
    (define test-obj (vector (lambda (x) x) 2 3))
-   (define ht (make-hash-table))   
+   (define ht (make-hash-table))
    (vector-set! test-obj 2 test-obj)
    (hash-table-set! ht test-obj 1)
    (display (hash-table-ref ht test-obj)))

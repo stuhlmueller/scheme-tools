@@ -14,6 +14,7 @@
          make-equal-hash-table
          make-eq-hash-table
          alist->hash-table
+         hash-table?
          hash-table->alist
          hash-table-ref
          hash-table-ref/default

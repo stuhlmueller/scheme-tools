@@ -38,7 +38,7 @@
          (when (debug-mode)
                (print-return g0 v))
          v))))
- 
+
  (define-syntax define/debug
    (syntax-rules ()
      [(_ (name a1 a2 ...) . bodies)

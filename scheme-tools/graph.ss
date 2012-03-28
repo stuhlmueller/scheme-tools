@@ -4,7 +4,8 @@
 
  (scheme-tools graph)
 
- (export make-graph
+ (export graph?
+         make-graph
          graph->alist
          graph-size
          graph:root

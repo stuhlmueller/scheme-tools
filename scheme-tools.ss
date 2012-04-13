@@ -48,6 +48,8 @@
          pe
          pp
          ppe
+         prefixed-string?
+         prefixed-symbol?
          pretty-print
          read-file
          repeat
@@ -68,7 +70,8 @@
          true
          true?
          union
-         void)
+         void
+         void?)
 
  (import (rnrs)
          (srfi :19)

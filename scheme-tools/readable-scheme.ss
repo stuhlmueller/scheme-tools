@@ -17,6 +17,8 @@
          pe
          pp
          ppe
+         prefixed-string?
+         prefixed-symbol?
          repeat
          sym+num
          sym+num->num
@@ -25,7 +27,8 @@
          tagged-list?
          true
          true?
-         rest)
+         rest
+         void?)
 
  (import (scheme-tools srfi-compat :1)
          (scheme-tools external)
@@ -73,6 +76,18 @@
                   (reverse
                    (string->list
                     (symbol->string sn))))))))
+
+ (define (prefixed-string? obj pre)
+   (assert (string? obj))
+   (assert (string? pre))
+   (and (>= (string-length obj) (string-length pre))
+        (equal? pre (substring obj 0 (string-length pre)))))
+
+ (define (prefixed-symbol? obj pre)
+   (assert (symbol? pre))
+   (assert (symbol? obj))
+   (prefixed-string? (symbol->string obj)
+                     (symbol->string pre)))
 
  (define (symbol-maker sym)
    (let ([counter (get-counter)])
@@ -133,5 +148,8 @@
    (if (null? arg)
        default
        (car arg)))
+
+ (define (void? obj)
+   (eq? obj (void)))
 
  )

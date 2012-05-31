@@ -18,6 +18,7 @@
          tdist-pdf
          discrete-pdf
          mean
+         multinomial
          mmultinomial-lnpdf
          normalize
          sample-discrete
@@ -34,7 +35,9 @@
          sum
          logsumexp
          uniform-draw
-         flip)
+         flip
+         LOG-PROB-1
+         LOG-PROB-0)
 
  (import (scheme-tools math math))
 

@@ -4,7 +4,8 @@
 
  (scheme-tools profile)
 
- (export get-runtime)
+ (export get-runtime
+         get-runtime&value)
 
  (import (rnrs)
          (srfi :19)
@@ -14,5 +15,11 @@
    (let ([start-time (current-time)])
      (proc)
      (time-diff (current-time) start-time)))
+
+ (define (get-runtime&value proc)
+   (let ([start-time (current-time)])
+     (let ([result (proc)])
+       (values (time-diff (current-time) start-time)
+               result))))
 
  )

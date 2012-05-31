@@ -6,6 +6,7 @@
 
  (export ->string
          ->string:n
+         alist-map
          all
          call&return
          false
@@ -15,6 +16,7 @@
          opt
          pair
          pe
+         pen
          pp
          ppe
          prefixed-string?
@@ -108,6 +110,11 @@
 
  (define pp->obj second)
 
+ (define (pen . args)
+   (begin
+     (apply pe args)
+     (display "\n")))
+
  (define (pe . args)
    (if (null? args)
        #f
@@ -151,5 +158,10 @@
 
  (define (void? obj)
    (eq? obj (void)))
+
+ (define (alist-map proc alist)
+   (map (lambda (x)
+          (proc (car x) (cdr x)))
+        alist))
 
  )

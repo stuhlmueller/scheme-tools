@@ -7,9 +7,11 @@
  (export $
          ->string
          ->string:n
+         alist-map
          all
          all-combinations
          assert
+         assert*
          bin
          call&return
          command-line-arguments
@@ -46,6 +48,7 @@
          pair
          parameterize
          pe
+         pen
          pp
          ppe
          prefixed-string?
@@ -76,6 +79,7 @@
  (import (rnrs)
          (srfi :19)
          (scheme-tools bin)
+         (scheme-tools debug)
          (scheme-tools file)
          (scheme-tools lists)
          (scheme-tools math)

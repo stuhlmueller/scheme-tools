@@ -21,7 +21,7 @@
        (hash-table-ref watch-table
                        obj
                        (lambda () (begin
-                               (hash-table-set! watch-table obj #t)
-                               #f))))))
+                                    (hash-table-set! watch-table obj #t)
+                                    #f))))))
 
  )

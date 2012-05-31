@@ -4,7 +4,8 @@
 
  (scheme-tools debug)
 
- (export define/debug
+ (export assert*
+         define/debug
          define/count
          show-debug-counts
          reset-debug-counts!
@@ -90,5 +91,14 @@
      (vector-map (lambda (k v) (pe k ": " v "\n"))
                  keys
                  vals)))
+
+ (define-syntax assert*
+   (syntax-rules ()
+     [(_ condition thunk)
+      (let ([v condition])
+        (when (not v)
+              (thunk)
+              (display "\n")
+              (error 'condition "assertion failed")))]))
 
  )

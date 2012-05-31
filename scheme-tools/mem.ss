@@ -19,27 +19,27 @@
          (scheme-tools hash)
          (scheme-tools table)
          (scheme-tools))
- 
-  (define (mem f)
+
+ (define (mem f)
    (let ([memtable (make-finitize-hash-table)])
      (lambda args
        (hash-table-ref
         memtable
         args
         (lambda () (let ([val (apply f args)])
-                (hash-table-set! memtable args val)
-                val))))))
+                     (hash-table-set! memtable args val)
+                     val))))))
 
  (define (recursive-mem f make-recursion-value)
-   (let ([memtable (make-finitize-hash-table)])   
+   (let ([memtable (make-finitize-hash-table)])
      (lambda args
        (hash-table-ref
         memtable
         args
         (lambda () (begin
-                (hash-table-set! memtable args (make-recursion-value))
-                (let ([val (apply f args)])
-                  (hash-table-set! memtable args val)
-                  val)))))))
+                     (hash-table-set! memtable args (make-recursion-value))
+                     (let ([val (apply f args)])
+                       (hash-table-set! memtable args val)
+                       val)))))))
 
  )

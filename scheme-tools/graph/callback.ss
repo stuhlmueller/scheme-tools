@@ -20,7 +20,7 @@
    (get/set-property graph
                      'callback-registry
                      make-finitize-hash-table))
- 
+
  (define (graph:register-callback! graph node callback)
    (hash-table-set! (graph->callback-registry graph)
                     node

@@ -6,9 +6,9 @@
 ;; Copyright (c) 1994-2003 by Olin Shivers and Brian D. Carlstrom.
 ;; Copyright (c) 1999-2003 by Martin Gasbichler.
 ;; Copyright (c) 2001-2003 by Michael Sperber.
-;; 
+;;
 ;; All rights reserved.
-;; 
+;;
 ;; Redistribution and use in source and binary forms, with or without
 ;; modification, are permitted provided that the following conditions
 ;; are met:
@@ -19,7 +19,7 @@
 ;;    documentation and/or other materials provided with the distribution.
 ;; 3. The name of the authors may not be used to endorse or promote products
 ;;    derived from this software without specific prior written permission.
-;; 
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE AUTHORS ``AS IS'' AND ANY EXPRESS OR
 ;; IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 ;; OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -58,7 +58,7 @@
               comps)
              (else
               (call-with-values
-                  (lambda () 
+                  (lambda ()
                     (do-vertex (slot (car to-do)) index stack comps))
                 (lambda (index stack comps)
                   (loop to-do index stack comps))))))))
@@ -80,7 +80,7 @@
    (protocol
     (lambda (p)
       (lambda (data) (p data '() #f 0 #f #f)))))
- 
+
  (define (make-vertices vertices to slot set-slot!)
    (let ((maybe-slot (lambda (n)
                        (let ((s (slot n)))
@@ -161,7 +161,7 @@
      (car edges)))
 
  ;; GRAPH is ((<symbol> . <symbol>*)*)
- 
+
  (define (scsh-strongly-connected-components graph)
    (let ((vertices (map (lambda (n)
                           (vector (car n) #f #f))
@@ -170,7 +170,7 @@
                  (vector-set! vertex 1 (map (lambda (s)
                                               (find (lambda (v)
                                                       (eq? s (vector-ref v 0)))
-                                                     vertices))
+                                                    vertices))
                                             (cdr data))))
                graph
                vertices)

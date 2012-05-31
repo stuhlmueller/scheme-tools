@@ -37,5 +37,5 @@
 
  (define (union lsts equality)
    (delete-duplicates (apply lset-union (cons equality lsts))))
- 
+
  )

@@ -39,5 +39,5 @@
           [scsh-components (scsh-strongly-connected-components scsh-graph)])
      (reverse (map (lambda (component) (map id->object component))
                    scsh-components))))
- 
+
  )

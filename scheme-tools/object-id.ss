@@ -20,9 +20,9 @@
          (scheme-tools hash))
 
  (define obj-id-maker (get-counter))
- 
+
  (define obj->id-table (make-finitize-hash-table))
- 
+
  (define id->obj-table (make-eq-hash-table))
 
  (define (reset-object-ids!)

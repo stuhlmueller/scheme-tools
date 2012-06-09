@@ -1,68 +1,21 @@
 #!/usr/bin/python
 import sys
 import cPickle as pickle
-from operator import add, mul
-try:
-    import pymprog as p
-except:
-    print "linsolve needs glpk and pymprog-0.4"
-    exit()
+import numpy as np
 
-def product(data):
-    return reduce(mul, data)
-    
-def var_ref(vt, vname):
-    vt.setdefault(vname, p.var([0], vname))
-    return vt[vname][0]
-
-## FIXME: don't assume arity 2
-def parse_constraint(vt, expr):
-    if type(expr) in [type(0.0), type(0)]:
-        return expr
-    elif type(expr) != type([]):
-        return var_ref(vt, expr)
-    elif expr[0] == "=":
-        assert len(expr) == 3
-        return parse_constraint(vt, expr[1]) == parse_constraint(vt, expr[2])
-    elif expr[0] == "+":
-        return sum([parse_constraint(vt, ei) for ei in expr[1:]])
-    elif expr[0] == "*":
-        return product([parse_constraint(vt, ei) for ei in expr[1:]])
-    else:
-        raise Exception("unknown equation type", expr)
-
-def build_constraint(vt, eqn):
-    return p.st(parse_constraint(vt, eqn))
-
-def solve_batch(eqns):
-    vt = {}
-    p.beginModel('basic')
-    for eqn in eqns:
-        build_constraint(vt, eqn)
-    p.solve()
-    for (vname, v) in vt.items():
-        print vname, v[0].primal
-
-def solve_online():
-    vt = {}
-    p.beginModel('basic')
-    while True:
-      try:
-          eqn = pickle.load(sys.stdin)
-          if eqn == "solve":
-              break
-          build_constraint(vt, eqn)
-      except EOFError:
-          break    
-    p.solve()
-    solution = [[vname, v[0].primal] for (vname, v) in vt.items()]
-    pickle.dump(solution, sys.stdout)
+def solve():
+    Apre = pickle.load(sys.stdin)
+    bpre = pickle.load(sys.stdin)
+    # Apre = [[-1, 0.75], [0, -0.25]]
+    # bpre = [-0.125, -0.625]
+    # sys.stderr.write(str(Apre) + "\n")
+    # sys.stderr.write(str(bpre) + "\n")
+    A = np.array(Apre)
+    b = np.array(bpre)
+    x = np.linalg.solve(A, b).tolist()
+    # sys.stderr.write(str(x) + "\n")
+    pickle.dump(x, sys.stdout)
     sys.stdout.flush()
-
-# eqns = [["=", ["+", ["*", 2, "x"], ["*", 3, "y"]], 4],
-#         ["=", ["+", ["*", 6, "x"], ["*", 1, "y"]], 8]]
-
-# solve_batch(eqns)
-
+    
 if __name__ == "__main__":
-    solve_online()
+    solve()

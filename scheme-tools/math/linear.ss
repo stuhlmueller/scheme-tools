@@ -19,17 +19,10 @@
 
  (define solver "linsolve")
 
- (define (strings->symbols sol)
-   (map (lambda (kv)
-          (cons (string->symbol (car kv))
-                (cadr kv)))
-        sol))
-
- (define (linsolve eqns)
+ (define (linsolve A b)
    (let ([port (open-py-ports solver)])
-     (for-each (lambda (eqn) (py-pickle port eqn))
-               eqns)
-     (py-pickle port 'solve)
-     (strings->symbols (py-unpickle port))))
+     (py-pickle port A)
+     (py-pickle port b)
+     (py-unpickle port)))
 
  )

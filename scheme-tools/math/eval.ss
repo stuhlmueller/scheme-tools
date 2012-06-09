@@ -29,9 +29,27 @@
                eqns)
      bindings))
 
+ (define (dmax . lst)
+   (if (null? lst)
+       (error lst "dmax got empty list")
+       (let loop ([lst (cdr lst)]
+                  [mx (car lst)])
+         (if (null? lst)
+             mx
+             (if (d> (car lst) mx)
+                 (loop (cdr lst) (car lst))
+                 (loop (cdr lst) mx))))))
+
+ (define (dlogsumexp . log-vals)
+   (let ([max-log-val (apply dmax log-vals)])
+     (if (equal? max-log-val -inf.0)
+         -inf.0
+         (d+ (dlog (apply d+ (map (lambda (val) (dexp (d- val max-log-val))) log-vals)))
+             max-log-val))))
+
  (define (application-expr->operator/ad app)
    (let ([operator-expr (first app)])
-     (cond [(eq? operator-expr 'logsumexp) (error 'logsumexp "not available in AD mode")]
+     (cond [(eq? operator-expr 'logsumexp) dlogsumexp]
            [(eq? operator-expr '+) d+]
            [(eq? operator-expr '*) d*]
            [(eq? operator-expr '-) d-]

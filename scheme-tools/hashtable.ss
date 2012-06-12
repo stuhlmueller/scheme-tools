@@ -22,9 +22,9 @@
 
  (define (hashtable->alist table)
    (let-values ([(keys vals) (hashtable-entries table)])
-     (vector-map cons
-                 keys
-                 vals)))
+     (map cons
+          (vector->list keys)
+          (vector->list vals))))
 
  (define (hashtable-for-each proc table)
    (let-values ([(keys vals) (hashtable-entries table)])

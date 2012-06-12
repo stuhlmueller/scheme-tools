@@ -8,11 +8,7 @@ Required (one of the following):
 Optional:
 
 * To solve systems of linear equations:
-    * [glpk](http://www.gnu.org/software/glpk/)
-    * [pymprog-0.4](http://sourceforge.net/projects/pymprog/files/pymprog-0.4/)
-* To solve systems of polynomials:
-    * [pexpect](http://www.noah.org/wiki/pexpect)
-    * [Mathematica](http://www.wolfram.com/mathematica/)
+    * [numpy](http://numpy.scipy.org/)
 * To visualize graphs:
     * [ubigraph](http://ubietylab.net/ubigraph/)
 
@@ -23,6 +19,7 @@ Includes:
 * [mit-church](http://code.google.com/p/mit-church/) math and ffi library (by David Wingate)
 * [scsh](http://www.scsh.net/) module for strongly connected components
 * [merge-sort](http://en.literateprograms.org/Category:Merge_sort)
+* [AD tools](https://engineering.purdue.edu/~qobi/) (by Jeffrey Mark Siskind)
 
 Changes:
 

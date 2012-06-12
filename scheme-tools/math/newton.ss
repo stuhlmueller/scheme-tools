@@ -26,21 +26,27 @@
    (list (vector->list (vector-map vector->list D0))
          (vector->list (vector-map - F0))))
 
- (define/kw (newton eqns [init-val :default 0.0] [tolerance :default 0.0001])
+ (define/kw (newton eqns [init-val :default 0.0] [tolerance :default 0.0001] [max-iterations :default 30])
    (let* ([f (eqns->ad-func (zero-equations eqns))]
           [vars (map second eqns)]
           [y-dim (length eqns)]
           [Df (partials f y-dim)]
           [v0 (make-vector y-dim init-val)])
-     (let loop ([v0 v0])
+     (let loop ([v0 v0]
+                [iters 0])
        (let* ([D0 (Df v0)]
               [F0 (f v0)]
               [lineqns (newton-linear-equations vars D0 F0)]
               [linsol (linsolve (first lineqns) (second lineqns))]
-              [deltav (list->vector linsol)])
+              [deltav (list->vector linsol)]
+              [delta (abs (apply + (vector->list deltav)))])
          (let ([v1 (vector-map + v0 deltav)])
-           (if (< (abs (apply + (vector->list deltav))) tolerance)
-               (map cons vars (vector->list v1))
-               (loop v1)))))))
+           (if (> iters max-iterations)
+               (begin
+                 (pen "newton: >max-iterations, delta " delta)
+                 (map cons vars (vector->list v1)))
+               (if (< delta tolerance)
+                   (map cons vars (vector->list v1))
+                   (loop v1 (+ iters 1)))))))))
 
  )

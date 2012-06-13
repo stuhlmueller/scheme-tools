@@ -1,6 +1,6 @@
 #!r6rs
 
-;; A hashtable-based data structure for log probability distributions
+;; A hashtable-based data structure for discrete log probability distributions
 
 (library
 
@@ -45,11 +45,12 @@
    (hashtable-entries dist))
 
  (define (sample-dist dist)
+   (assert (not (= (dist-mass dist) LOG-PROB-0)))
    (let-values ([(vals ps) (dist-vals&ps dist)])
-     (if (= (length vals) 1)
-         (first vals)
+     (if (= (vector-length vals) 1)
+         (vector-ref vals 0)
          (multinomial (vector->list vals)
-                      (vector->list ps)))))
+                      (map exp (vector->list ps))))))
 
  (define (get-dist-prob dist val)
    (hashtable-ref dist val LOG-PROB-0))

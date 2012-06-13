@@ -59,7 +59,9 @@
    (hashtable-set! dist val p))
 
  (define (dist-mass dist)
-   (apply logsumexp (vector->list (dist-ps dist))))
+   (if (empty-dist? dist)
+       LOG-PROB-0
+       (apply logsumexp (vector->list (dist-ps dist)))))
 
  )
 

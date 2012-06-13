@@ -34,8 +34,10 @@
          randomize-rng
          sum
          logsumexp
+         log1minus
          uniform-draw
          flip
+         log-flip
          LOG-PROB-1
          LOG-PROB-0)
 

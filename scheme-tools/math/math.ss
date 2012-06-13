@@ -34,8 +34,10 @@
          randomize-rng
          sum
          logsumexp
+         log1minus
          uniform-draw
          flip
+         log-flip
          LOG-PROB-1
          LOG-PROB-0)
 
@@ -103,6 +105,9 @@
          (+ (log (exact->inexact (sum (map (lambda (val) (exp (- val max-log-val))) log-vals))))
             max-log-val))))
 
+ (define (log1minus v)
+   (log (- 1.0 (exp v))))
+
  (define (uniform-draw lst)
    (list-ref lst (random-integer (length lst))))
 
@@ -111,10 +116,16 @@
        (< (random-real) 0.5)
        (< (random-real) (car w)) ))
 
+ (define (log-flip . w)
+   (if (null? w)
+       (flip .5)
+       (flip (exp (car w)))))
+
  (define (multinomial vals ps)
    (list-ref vals (sample-discrete ps)))
 
  (define LOG-PROB-1 0)
+
  (define LOG-PROB-0 -inf.0)
 
  )

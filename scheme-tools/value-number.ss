@@ -49,8 +49,10 @@
          &false
          &or
          &pair?
+         &reverse
          &symbol?
          &tagged-list?
+         &value-number?
          &vector
          &vector-append
          &vector-index
@@ -298,6 +300,9 @@
  (define (&cons n1 n2)
    (flat-obj->num (cons n1 n2)))
 
+ (define (&reverse lst)
+   (compress-list (reverse (&expand-list lst))))
+
  (define (&symbol? n)
    (let ([obj (hashtable-ref (obj-store) n not-found)])
      (and (not (not-found? obj))
@@ -308,7 +313,7 @@
    (flat-obj->num (list->vector ns)))
 
  (define (&vector? n)
-   (vector? (&expand-vector n))) ;; wrong--expand-vector already assumes vector
+   (compress-boolean (vector? (&expand-step n))))
 
  (define (&vector-ref n i)
    (vector-ref (&expand-vector n) i))
@@ -334,8 +339,7 @@
      (compress-boolean (null? obj))))
 
  (define (&pair? n)
-   (let ([obj (hashtable-ref (obj-store) n not-found)])
-     (pair? obj)))
+   (compress-boolean (pair? (&expand-step n))))
 
  (define (&car n)
    (car (&expand-pair n)))

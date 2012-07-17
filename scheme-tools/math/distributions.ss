@@ -9,6 +9,7 @@
  (export make-empty-dist
          empty-dist?
          make-dist
+         copy-dist
          dist-vals
          dist-ps
          dist-vals&ps
@@ -43,6 +44,10 @@
 
  (define (dist-vals&ps dist)
    (hashtable-entries dist))
+
+ (define (copy-dist dist)
+   (let-values ([(vals ps) (dist-vals&ps dist)])
+     (make-dist vals ps)))
 
  (define (sample-dist dist)
    (assert (not (= (dist-mass dist) LOG-PROB-0)))

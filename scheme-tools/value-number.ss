@@ -3,7 +3,9 @@
 ;; FIXME: make sure probability of hash collisions is low (all primitive procedures in one bucket)
 ;; FIXME: Make &expand-recursive more robust (don't rely on &... symbols not being used elsewhere)
 ;;
-;; All functions that start with & take value numbers as arguments.
+;; All functions that start with & operate on value numbers (input and
+;; output). Exceptions are marked. For example, &vector?->b returns a
+;; Boolean, and &list-ref/n takes the list index as a number.
 
 (library
 
@@ -13,10 +15,10 @@
          &+
          &-
          &/
-         &=
          &<
-         &>
          &<=
+         &=
+         &>
          &>=
          &and
          &cadddr
@@ -29,6 +31,7 @@
          &cdr
          &cons
          &eq?
+         &eq?->b
          &expand-boolean
          &expand-list
          &expand-null
@@ -36,29 +39,33 @@
          &expand-pair
          &expand-procedure
          &expand-recursive
+         &expand-step
          &expand-symbol
          &expand-vector
+         &false
          &id
          &list
          &list-ref
          &list-ref/n
          &not
-         &null?
          &null
-         &true
-         &false
+         &null?
+         &null?->b
          &or
          &pair?
+         &pair?->b
          &reverse
          &symbol?
-         &tagged-list?
-         &value-number?
+         &symbol?->b
+         &tagged-list?->b
+         &true
          &vector
          &vector-append
          &vector-index
          &vector-length
          &vector-ref
          &vector?
+         &vector?->b
          compress-boolean
          compress-list
          compress-null
@@ -71,7 +78,8 @@
          make-number-store
          make-obj-store
          number-store
-         obj-store)
+         obj-store
+         value-number?)
 
  (import (rnrs)
          (scheme-tools srfi-compat :43)
@@ -141,7 +149,7 @@
                               (hashtable-set! (obj-store) id flat-obj)
                               id))))
 
- (define (&value-number? obj)
+ (define (value-number? obj)
    (and (symbol? obj)
         (prefixed-symbol? obj '&)))
 
@@ -182,7 +190,7 @@
        (&cons (car ns) (compress-list (cdr ns)))))
 
  (define (compress-recursive obj)
-   (assert (not (&value-number? obj)))
+   (assert (not (value-number? obj)))
    (cond [(null? obj) (flat-obj->num '())]
          [(pair? obj) (flat-obj->num (cons (compress-recursive (car obj))
                                            (compress-recursive (cdr obj))))]
@@ -197,7 +205,7 @@
          [else (error obj "compress-recursive: unknown object type")]))
 
  (define (&expand-step n)
-   (assert (&value-number? n))
+   (assert (value-number? n))
    (hashtable-ref (obj-store) n not-found))
 
  (define (make-typed-expander is-type?)
@@ -283,6 +291,9 @@
  (define (&eq? n1 n2)
    (compress-boolean (eq? n1 n2)))
 
+ (define (&eq?->b n1 n2)
+   (eq? n1 n2))
+
  (define (&id n)
    n)
 
@@ -303,17 +314,23 @@
  (define (&reverse lst)
    (compress-list (reverse (&expand-list lst))))
 
- (define (&symbol? n)
+ (define (&symbol?->b n)
    (let ([obj (hashtable-ref (obj-store) n not-found)])
      (and (not (not-found? obj))
           (symbol? obj)
           (not-found? (hashtable-ref (obj-store) obj not-found)))))
 
+ (define (&symbol? n)
+   (compress-boolean (&symbol?->b n)))
+
  (define (&vector . ns)
    (flat-obj->num (list->vector ns)))
 
  (define (&vector? n)
-   (compress-boolean (vector? (&expand-step n))))
+   (compress-boolean (&vector?->b n)))
+
+ (define (&vector?->b n)
+   (vector? (&expand-step n)))
 
  (define (&vector-ref n i)
    (vector-ref (&expand-vector n) i))
@@ -335,11 +352,17 @@
              [else (loop (+ i 1))]))))
 
  (define (&null? n)
+   (compress-boolean (&null?->b n)))
+
+ (define (&null?->b n)
    (let ([obj (hashtable-ref (obj-store) n not-found)])
-     (compress-boolean (null? obj))))
+     (null? obj)))
 
  (define (&pair? n)
-   (compress-boolean (pair? (&expand-step n))))
+   (compress-boolean (&pair?->b n)))
+
+ (define (&pair?->b n)
+   (pair? (&expand-step n)))
 
  (define (&car n)
    (car (&expand-pair n)))
@@ -365,11 +388,11 @@
  (define (&cddddr n)
    (cdr (&expand-pair (&cdddr n))))
 
- (define (&tagged-list? n sym)
-   (and (&pair? n)
+ (define (&tagged-list?->b n sym)
+   (and (&pair?->b n)
         (let ([c (&car n)])
-          (and (&symbol? c)
-               (eq? (&expand-symbol c) sym)))))
+          (and (&symbol?->b c)
+               (&eq?->b (&expand-symbol c) sym)))))
 
  (define &null (compress-null '()))
 

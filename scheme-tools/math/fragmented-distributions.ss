@@ -13,6 +13,7 @@
          copy-fdist
          empty-fdist?
          fdist-add-fragment!
+         fdist-table
          fdist-fragments
          fdist-mass
          fdist-ps
@@ -45,7 +46,7 @@
    (let ([fdist (make-empty-fdist)])
      (for-each (lambda (fragment) (fdist-add-fragment! fdist fragment)
                   fragments)
-               fragments)
+               (reverse fragments))
      fdist))
 
  (define (empty-fdist? fdist)

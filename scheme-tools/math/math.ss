@@ -98,12 +98,15 @@
      (map (lambda (element) (/ element total))
           lst)))
 
+ ;; (define (logsumexp . log-vals)
+ ;;   (let ([max-log-val (apply max log-vals)])
+ ;;     (if (equal? max-log-val -inf.0)
+ ;;         -inf.0
+ ;;         (+ (log (exact->inexact (sum (map (lambda (val) (exp (- val max-log-val))) log-vals))))
+ ;;            max-log-val))))
+
  (define (logsumexp . log-vals)
-   (let ([max-log-val (apply max log-vals)])
-     (if (equal? max-log-val -inf.0)
-         -inf.0
-         (+ (log (exact->inexact (sum (map (lambda (val) (exp (- val max-log-val))) log-vals))))
-            max-log-val))))
+   (log (sum (map exp log-vals))))
 
  (define (log1minus v)
    (log (- 1.0 (exp v))))

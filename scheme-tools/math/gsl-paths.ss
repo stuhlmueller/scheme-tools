@@ -21,6 +21,7 @@
     "/usr/lib/libgslcblas.so"
     "/usr/lib64/libgslcblas.so.0"
     "/usr/lib64/libgslcblas.so"
+    "/usr/lib/i386-linux-gnu/libgslcblas.so"
     ))
 
  (define libgsl-paths
@@ -36,6 +37,7 @@
     "/usr/lib/libgsl.so"
     "/usr/lib64/libgsl.so.0"
     "/usr/lib64/libgsl.so"
+    "/usr/lib/i386-linux-gnu/libgsl.so"
     ))
 
  ;; goes through a list of library paths and opens
